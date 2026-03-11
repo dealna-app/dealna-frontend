@@ -1,0 +1,2973 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dealna — Morocco's AI Deals Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500;600&family=Tajawal:wght@400;500;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --c-ink:       #0A0D14;
+  --c-ink2:      #161A27;
+  --c-ink3:      #1F2535;
+  --c-paper:     #F8F6F1;
+  --c-white:     #FFFFFF;
+  --c-accent:    #1449E8;
+  --c-accent-lt: #E8EEFF;
+  --c-accent-glow: rgba(20,73,232,.18);
+  --c-green:     #00A870;
+  --c-green-lt:  #E6FBF3;
+  --c-red:       #E03030;
+  --c-red-lt:    #FEF0F0;
+  --c-amber:     #D97706;
+  --c-amber-lt:  #FEF3C7;
+  --c-muted:     #6B7491;
+  --c-muted2:    #9BA3BC;
+  --c-border:    #E4E7F2;
+  --c-border2:   #CDD2E8;
+
+  --ff-display:  'Playfair Display', Georgia, serif;
+  --ff-body:     'DM Sans', sans-serif;
+  --ff-mono:     'DM Mono', monospace;
+  --ff-ar:       'Tajawal', sans-serif;
+
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --r-xl: 32px;
+
+  --sh-sm: 0 2px 8px rgba(10,13,20,.07);
+  --sh-md: 0 8px 32px rgba(10,13,20,.10);
+  --sh-lg: 0 20px 64px rgba(10,13,20,.14);
+  --sh-accent: 0 12px 40px rgba(20,73,232,.25);
+
+  --nav-h: 66px;
+  --ease: cubic-bezier(.4,0,.2,1);
+  --ease-spring: cubic-bezier(.34,1.56,.64,1);
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; font-size:16px; }
+body {
+  font-family: var(--ff-body);
+  background: var(--c-paper);
+  color: var(--c-ink);
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body.ar { font-family: var(--ff-ar); direction: rtl; }
+body.ar h1, body.ar h2, body.ar h3, body.ar h4 { font-family: var(--ff-ar); }
+h1,h2,h3,h4 { font-family: var(--ff-display); line-height: 1.1; letter-spacing: -.5px; }
+a { text-decoration:none; color:inherit; }
+img { max-width:100%; display:block; }
+button, input, textarea, select { font-family: inherit; }
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background: var(--c-paper); }
+::-webkit-scrollbar-thumb { background: var(--c-border2); border-radius:4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-accent); }
+
+/* ═══════════════════════════════════════════
+   GRAIN OVERLAY
+═══════════════════════════════════════════ */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: .5;
+}
+
+/* ═══════════════════════════════════════════
+   SETUP BANNER
+═══════════════════════════════════════════ */
+#setup-banner {
+  background: var(--c-ink);
+  color: #fff;
+  padding: 12px 5%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: .82rem;
+  position: relative;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+#setup-banner strong { font-weight: 600; opacity: .5; font-size: .75rem; text-transform: uppercase; letter-spacing: 1px; }
+#setup-input {
+  flex: 1; min-width: 200px; max-width: 340px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  color: #fff;
+  border-radius: var(--r-sm);
+  padding: 8px 14px;
+  font-size: .82rem;
+  outline: none;
+  transition: border-color .2s;
+  font-family: var(--ff-mono);
+}
+#setup-input:focus { border-color: var(--c-accent); }
+#setup-input::placeholder { opacity: .35; }
+.setup-connect {
+  background: var(--c-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 8px 18px;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+  letter-spacing: .2px;
+}
+.setup-connect:hover { background: #1a58ff; transform: translateY(-1px); box-shadow: var(--sh-accent); }
+.setup-dismiss {
+  background: rgba(255,255,255,.08);
+  border: none;
+  color: rgba(255,255,255,.4);
+  border-radius: var(--r-sm);
+  padding: 8px 12px;
+  font-size: .78rem;
+  cursor: pointer;
+  margin-left: auto;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.setup-dismiss:hover { color: #fff; background: rgba(255,255,255,.14); }
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+nav {
+  height: var(--nav-h);
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: rgba(248,246,241,.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
+  align-items: center;
+  padding: 0 5%;
+  gap: 0;
+}
+.nav-logo {
+  font-family: var(--ff-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--c-ink);
+  cursor: pointer;
+  letter-spacing: -1px;
+  margin-right: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.nav-logo-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--c-accent);
+  border-radius: 50%;
+  transition: transform .3s var(--ease-spring);
+}
+.nav-logo:hover .nav-logo-dot { transform: scale(1.6); }
+.nav-links {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+}
+.nav-link {
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--c-muted);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  transition: all .18s;
+  letter-spacing: .1px;
+  white-space: nowrap;
+}
+.nav-link:hover { color: var(--c-ink); background: rgba(10,13,20,.05); }
+.nav-link.active { color: var(--c-ink); font-weight: 600; background: rgba(10,13,20,.07); }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.api-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .73rem;
+  color: var(--c-muted2);
+}
+.api-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-border2);
+  transition: background .3s;
+  flex-shrink: 0;
+}
+.api-dot.live { background: var(--c-green); box-shadow: 0 0 0 3px rgba(0,168,112,.15); }
+.api-dot.dead { background: var(--c-red); }
+.lang-toggle {
+  background: transparent;
+  border: 1px solid var(--c-border2);
+  border-radius: var(--r-sm);
+  padding: 6px 11px;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--c-muted);
+  cursor: pointer;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  transition: all .2s;
+}
+.lang-toggle:hover { border-color: var(--c-accent); color: var(--c-accent); }
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--c-border2);
+  color: var(--c-ink);
+  border-radius: var(--r-sm);
+  padding: 8px 18px;
+  font-size: .82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.btn-ghost:hover { border-color: var(--c-ink); background: var(--c-ink); color: #fff; }
+.btn-solid {
+  background: var(--c-ink);
+  border: 1px solid var(--c-ink);
+  color: #fff;
+  border-radius: var(--r-sm);
+  padding: 8px 20px;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+  letter-spacing: .2px;
+}
+.btn-solid:hover { background: var(--c-accent); border-color: var(--c-accent); transform: translateY(-1px); box-shadow: var(--sh-accent); }
+.nav-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-accent), #4D7AFF);
+  color: #fff;
+  font-weight: 700;
+  font-size: .85rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--ff-display);
+  transition: transform .2s var(--ease-spring);
+}
+.nav-avatar:hover { transform: scale(1.1); }
+
+/* ═══════════════════════════════════════════
+   PAGE SYSTEM
+═══════════════════════════════════════════ */
+.page { display: none; }
+.page.on { display: block; animation: pageIn .3s var(--ease); }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ═══════════════════════════════════════════
+   HOME — HERO
+═══════════════════════════════════════════ */
+.hero {
+  background: var(--c-ink);
+  min-height: 88vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 100px 5% 80px;
+}
+
+/* Decorative background geometry */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+.hero-bg-circle:nth-child(1) {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(20,73,232,.28) 0%, transparent 70%);
+  top: -200px; right: -150px;
+  animation: drift1 12s ease-in-out infinite alternate;
+}
+.hero-bg-circle:nth-child(2) {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(0,168,112,.15) 0%, transparent 70%);
+  bottom: -100px; left: 10%;
+  animation: drift2 15s ease-in-out infinite alternate;
+}
+.hero-bg-circle:nth-child(3) {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(217,119,6,.1) 0%, transparent 70%);
+  top: 30%; left: 40%;
+  animation: drift1 18s ease-in-out infinite alternate-reverse;
+}
+@keyframes drift1 { to { transform: translate(40px, 30px); } }
+@keyframes drift2 { to { transform: translate(-30px, -40px); } }
+
+/* Hero grid lines */
+.hero-grid-lines {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 50px;
+  padding: 6px 14px 6px 8px;
+  margin-bottom: 28px;
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(8px);
+}
+.hero-eyebrow-dot {
+  width: 20px;
+  height: 20px;
+  background: var(--c-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .7rem;
+  flex-shrink: 0;
+}
+.hero-eyebrow span {
+  font-size: .75rem;
+  color: rgba(255,255,255,.55);
+  font-weight: 500;
+  letter-spacing: .3px;
+}
+
+.hero-headline {
+  font-size: clamp(2.4rem, 4.5vw, 4rem);
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -2.5px;
+  margin-bottom: 20px;
+}
+.hero-headline em {
+  font-style: italic;
+  color: transparent;
+  background: linear-gradient(135deg, #6D9AFF 0%, #A5C8FF 50%, #7BFFD4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1rem;
+  color: rgba(255,255,255,.45);
+  line-height: 1.75;
+  max-width: 480px;
+  margin-bottom: 36px;
+  font-weight: 300;
+}
+
+.hero-search-form {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--r-lg);
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+  max-width: 520px;
+  backdrop-filter: blur(16px);
+  transition: border-color .3s, box-shadow .3s;
+}
+.hero-search-form:focus-within {
+  border-color: rgba(20,73,232,.5);
+  box-shadow: 0 0 0 4px var(--c-accent-glow);
+}
+.hero-search-form input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: .9rem;
+  padding: 10px 14px;
+  min-width: 0;
+  font-weight: 300;
+}
+.hero-search-form input::placeholder { color: rgba(255,255,255,.28); }
+.hero-search-btn {
+  background: var(--c-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  padding: 10px 24px;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all .2s;
+  letter-spacing: .3px;
+}
+.hero-search-btn:hover { background: #1a58ff; }
+
+.hero-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.hero-tag {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 50px;
+  padding: 5px 14px;
+  font-size: .74rem;
+  color: rgba(255,255,255,.45);
+  cursor: pointer;
+  transition: all .18s;
+}
+.hero-tag:hover { background: rgba(255,255,255,.1); color: rgba(255,255,255,.8); }
+
+/* Hero metrics strip */
+.hero-metrics {
+  display: flex;
+  gap: 32px;
+  margin-top: 44px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  flex-wrap: wrap;
+}
+.hero-metric-num {
+  font-family: var(--ff-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1.5px;
+  line-height: 1;
+}
+.hero-metric-lbl {
+  font-size: .72rem;
+  color: rgba(255,255,255,.3);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-top: 4px;
+}
+
+/* Hero right panel */
+.hero-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: panelIn .6s .2s var(--ease) both;
+}
+@keyframes panelIn { from { opacity:0; transform:translateX(24px); } to { opacity:1; transform:none; } }
+
+.panel-card {
+  background: rgba(255,255,255,.055);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  backdrop-filter: blur(12px);
+  transition: border-color .2s;
+}
+.panel-card:hover { border-color: rgba(255,255,255,.16); }
+
+.panel-label {
+  font-size: .67rem;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,.3);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.mini-deal-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  cursor: pointer;
+  transition: background .15s;
+  border-radius: var(--r-sm);
+  padding-inline: 8px;
+  margin-inline: -8px;
+}
+.mini-deal-row:last-child { border-bottom: none; }
+.mini-deal-row:hover { background: rgba(255,255,255,.05); }
+.mini-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+.mini-info { flex: 1; min-width: 0; }
+.mini-title {
+  font-size: .8rem;
+  color: rgba(255,255,255,.8);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mini-store { font-size: .68rem; color: rgba(255,255,255,.3); margin-top: 2px; }
+.mini-badge {
+  font-size: .68rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--c-accent), #4D7AFF);
+  color: #fff;
+  padding: 3px 9px;
+  border-radius: 50px;
+  flex-shrink: 0;
+  font-family: var(--ff-mono);
+}
+
+.ai-categories { display: flex; flex-wrap: wrap; gap: 6px; }
+.ai-cat-chip {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 50px;
+  padding: 5px 12px;
+  font-size: .74rem;
+  color: rgba(255,255,255,.6);
+}
+
+/* ═══════════════════════════════════════════
+   SECTION LAYOUT
+═══════════════════════════════════════════ */
+.section { padding: 64px 5%; }
+.section-inner { max-width: 1200px; margin: 0 auto; }
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.section-title {
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: var(--c-ink);
+}
+.section-subtitle {
+  font-size: .84rem;
+  color: var(--c-muted);
+  margin-top: 5px;
+  font-weight: 400;
+}
+.section-action {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--c-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 8px 0;
+  transition: opacity .2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.section-action:hover { opacity: .7; }
+.section-action::after { content: '→'; font-size: .9rem; }
+
+/* ═══════════════════════════════════════════
+   CATEGORY FILTER STRIP
+═══════════════════════════════════════════ */
+.cat-strip {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.cat-strip::-webkit-scrollbar { display: none; }
+.cat-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--c-white);
+  border: 1.5px solid var(--c-border);
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-size: .8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .18s;
+  color: var(--c-muted);
+  flex-shrink: 0;
+}
+.cat-pill:hover { border-color: var(--c-ink); color: var(--c-ink); }
+.cat-pill.on {
+  background: var(--c-ink);
+  border-color: var(--c-ink);
+  color: #fff;
+}
+.cat-pill-icon { font-size: 1rem; }
+
+/* ═══════════════════════════════════════════
+   DEAL CARDS — v3
+═══════════════════════════════════════════ */
+.deals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.deal-card {
+  background: var(--c-white);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .25s var(--ease);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.deal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--sh-lg);
+  border-color: transparent;
+}
+.deal-card:hover .deal-cta-bar { opacity: 1; transform: translateY(0); }
+
+/* Card top image area */
+.deal-visual {
+  height: 160px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.deal-visual-bg-0 { background: linear-gradient(135deg, #EFF4FF 0%, #D6E4FF 100%); }
+.deal-visual-bg-1 { background: linear-gradient(135deg, #FFF7ED 0%, #FDE8CC 100%); }
+.deal-visual-bg-2 { background: linear-gradient(135deg, #F0FDF4 0%, #C6F3DD 100%); }
+.deal-visual-bg-3 { background: linear-gradient(135deg, #FDF2FF 0%, #EDD5FF 100%); }
+.deal-visual-bg-4 { background: linear-gradient(135deg, #FFF1F1 0%, #FECDCD 100%); }
+.deal-visual-icon { font-size: 3.6rem; transition: transform .3s var(--ease-spring); }
+.deal-card:hover .deal-visual-icon { transform: scale(1.12) rotate(-3deg); }
+
+.deal-top-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: .67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  padding: 4px 10px;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+}
+body.ar .deal-top-badge { left: auto; right: 12px; }
+.badge-hot { background: rgba(224,48,48,.1); color: var(--c-red); border: 1px solid rgba(224,48,48,.2); }
+.badge-new { background: rgba(20,73,232,.1); color: var(--c-accent); border: 1px solid rgba(20,73,232,.2); }
+.badge-verified { background: rgba(0,168,112,.1); color: var(--c-green); border: 1px solid rgba(0,168,112,.2); }
+.badge-exclusive { background: rgba(217,119,6,.1); color: var(--c-amber); border: 1px solid rgba(217,119,6,.2); }
+
+.deal-save-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,0,0,.07);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  transition: all .2s var(--ease-spring);
+  z-index: 2;
+}
+body.ar .deal-save-btn { right: auto; left: 10px; }
+.deal-save-btn:hover { transform: scale(1.15); background: #fff; }
+
+/* Card body */
+.deal-body {
+  padding: 18px 18px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.deal-category-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.deal-category-tag {
+  font-size: .67rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--c-muted2);
+}
+.deal-category-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--c-border2); }
+.deal-store-tag { font-size: .67rem; color: var(--c-muted2); }
+
+.deal-title {
+  font-family: var(--ff-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--c-ink);
+  margin-bottom: 7px;
+  letter-spacing: -.2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+body.ar .deal-title { font-family: var(--ff-ar); }
+.deal-description {
+  font-size: .79rem;
+  color: var(--c-muted);
+  line-height: 1.65;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+/* Promo code section */
+.deal-promo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--c-paper);
+  border: 1.5px dashed var(--c-border2);
+  border-radius: var(--r-sm);
+  padding: 9px 12px;
+  margin-bottom: 12px;
+}
+.deal-promo-label {
+  font-size: .63rem;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--c-muted2);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.deal-promo-code {
+  font-family: var(--ff-mono);
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--c-accent);
+  letter-spacing: .8px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.deal-copy-btn {
+  background: var(--c-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 5px 12px;
+  font-size: .7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .18s;
+  flex-shrink: 0;
+  letter-spacing: .3px;
+}
+.deal-copy-btn:hover { background: #1a58ff; }
+.deal-copy-btn.copied { background: var(--c-green); }
+
+/* Card footer */
+.deal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--c-border);
+}
+.deal-discount {
+  font-family: var(--ff-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--c-red);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.deal-original {
+  font-size: .7rem;
+  color: var(--c-muted2);
+  text-decoration: line-through;
+  margin-top: 2px;
+}
+.deal-expiry {
+  font-size: .69rem;
+  color: var(--c-muted2);
+  text-align: right;
+  font-family: var(--ff-mono);
+}
+
+/* AI score bar */
+.ai-score-wrap {
+  padding: 10px 18px 14px;
+  border-top: 1px solid var(--c-border);
+}
+.ai-score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.ai-score-lbl { font-size: .67rem; color: var(--c-muted2); text-transform: uppercase; letter-spacing: .6px; }
+.ai-score-val { font-size: .67rem; font-weight: 700; font-family: var(--ff-mono); color: var(--c-accent); }
+.ai-score-track { height: 3px; background: var(--c-border); border-radius: 3px; }
+.ai-score-fill {
+  height: 3px;
+  background: linear-gradient(90deg, var(--c-accent), var(--c-green));
+  border-radius: 3px;
+  transition: width .8s var(--ease);
+}
+
+/* Hover CTA bar */
+.deal-cta-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--c-ink);
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  font-size: .8rem;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all .22s var(--ease);
+  letter-spacing: .3px;
+}
+
+/* ═══════════════════════════════════════════
+   FEATURED STRIP — HORIZONTAL SCROLL
+═══════════════════════════════════════════ */
+.featured-strip {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+.featured-strip::-webkit-scrollbar { display: none; }
+.featured-item {
+  flex-shrink: 0;
+  width: 280px;
+  background: var(--c-ink);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: transform .25s var(--ease);
+  position: relative;
+}
+.featured-item:hover { transform: translateY(-4px); }
+.featured-item-bg {
+  position: absolute;
+  inset: 0;
+  opacity: .3;
+  filter: blur(60px);
+}
+.featured-item-bg-0 { background: radial-gradient(circle at 70% 30%, #1449E8, transparent 60%); }
+.featured-item-bg-1 { background: radial-gradient(circle at 70% 30%, #00A870, transparent 60%); }
+.featured-item-bg-2 { background: radial-gradient(circle at 70% 30%, #D97706, transparent 60%); }
+.featured-item-bg-3 { background: radial-gradient(circle at 70% 30%, #E03030, transparent 60%); }
+.featured-item-inner { position: relative; z-index: 1; padding: 22px; }
+.featured-item-cat { font-size: .67rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.35); font-weight: 600; margin-bottom: 10px; }
+.featured-item-title { font-family: var(--ff-display); font-size: 1rem; font-weight: 700; color: #fff; line-height: 1.25; margin-bottom: 8px; }
+body.ar .featured-item-title { font-family: var(--ff-ar); }
+.featured-item-store { font-size: .75rem; color: rgba(255,255,255,.4); margin-bottom: 18px; }
+.featured-item-discount { font-family: var(--ff-display); font-size: 2rem; font-weight: 800; color: #fff; letter-spacing: -1.5px; line-height: 1; }
+.featured-item-sub { font-size: .72rem; color: rgba(255,255,255,.3); margin-top: 3px; }
+
+/* ═══════════════════════════════════════════
+   STORES GRID
+═══════════════════════════════════════════ */
+.stores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.store-tile {
+  background: var(--c-white);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: 22px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .22s var(--ease);
+}
+.store-tile:hover {
+  border-color: var(--c-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px var(--c-accent-glow);
+}
+.store-tile-icon { font-size: 2.2rem; margin-bottom: 10px; }
+.store-tile-name {
+  font-family: var(--ff-display);
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--c-ink);
+  margin-bottom: 3px;
+}
+body.ar .store-tile-name { font-family: var(--ff-ar); }
+.store-tile-cat { font-size: .7rem; color: var(--c-muted); }
+.store-tile-deals { font-size: .7rem; color: var(--c-accent); margin-top: 5px; font-weight: 600; }
+
+/* ═══════════════════════════════════════════
+   MARQUEE / TICKER
+═══════════════════════════════════════════ */
+.ticker-wrap {
+  background: var(--c-ink2);
+  border-top: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 12px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ticker-inner {
+  display: inline-flex;
+  gap: 56px;
+  animation: ticker 28s linear infinite;
+  will-change: transform;
+}
+.ticker-wrap:hover .ticker-inner { animation-play-state: paused; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+.ticker-item {
+  font-size: .76rem;
+  color: rgba(255,255,255,.3);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: .3px;
+}
+.ticker-dot { width: 4px; height: 4px; background: var(--c-accent); border-radius: 50%; }
+
+/* ═══════════════════════════════════════════
+   FILTER BAR (DEALS PAGE)
+═══════════════════════════════════════════ */
+.filter-row {
+  background: var(--c-white);
+  border-bottom: 1px solid var(--c-border);
+  padding: 12px 5%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 100;
+}
+.filter-row-label {
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--c-muted2);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  flex-shrink: 0;
+}
+.filter-btn {
+  background: transparent;
+  border: 1.5px solid var(--c-border);
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-size: .78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .18s;
+  color: var(--c-muted);
+  white-space: nowrap;
+}
+.filter-btn:hover { border-color: var(--c-ink); color: var(--c-ink); }
+.filter-btn.on { background: var(--c-ink); border-color: var(--c-ink); color: #fff; }
+.filter-search {
+  margin-left: auto;
+  position: relative;
+}
+.filter-search input {
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-sm);
+  padding: 7px 14px;
+  font-size: .82rem;
+  outline: none;
+  width: 200px;
+  transition: border-color .2s, box-shadow .2s;
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+.filter-search input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-accent-glow); }
+.filter-search input::placeholder { color: var(--c-muted2); }
+
+/* ═══════════════════════════════════════════
+   PAGE HEADERS
+═══════════════════════════════════════════ */
+.page-hero {
+  background: var(--c-white);
+  border-bottom: 1px solid var(--c-border);
+  padding: 40px 5% 32px;
+}
+.page-hero-inner { max-width: 1200px; margin: 0 auto; }
+.page-hero h2 { font-size: 2rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 6px; }
+.page-hero p { color: var(--c-muted); font-size: .88rem; }
+
+/* ═══════════════════════════════════════════
+   ABOUT PAGE
+═══════════════════════════════════════════ */
+.about-hero-wrap {
+  background: var(--c-ink);
+  position: relative;
+  overflow: hidden;
+  padding: 80px 5%;
+}
+.about-hero-wrap .hero-bg-circle:nth-child(1) { opacity: .5; }
+.about-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+.about-inner h2 { font-size: clamp(2rem, 4vw, 3.2rem); color: #fff; letter-spacing: -2px; margin-bottom: 16px; }
+.about-inner h2 span { color: transparent; background: linear-gradient(90deg, #6D9AFF, #7BFFD4); -webkit-background-clip: text; background-clip: text; }
+.about-inner p { color: rgba(255,255,255,.45); font-size: .97rem; line-height: 1.8; margin-bottom: 28px; font-weight: 300; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+.feature-card {
+  background: var(--c-white);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: 26px 22px;
+  transition: all .22s;
+}
+.feature-card:hover { transform: translateY(-4px); box-shadow: var(--sh-md); border-color: var(--c-accent); }
+.feature-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  background: var(--c-accent-lt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+}
+.feature-card h4 { font-family: var(--ff-display); font-size: .97rem; font-weight: 700; margin-bottom: 7px; }
+body.ar .feature-card h4 { font-family: var(--ff-ar); }
+.feature-card p { font-size: .81rem; color: var(--c-muted); line-height: 1.65; }
+
+/* ═══════════════════════════════════════════
+   PROFILE PAGE
+═══════════════════════════════════════════ */
+.profile-hero {
+  background: var(--c-ink);
+  padding: 40px 5%;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.profile-avatar-wrap {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-accent), #4D7AFF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ff-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  border: 3px solid rgba(255,255,255,.15);
+  flex-shrink: 0;
+}
+.profile-name { font-family: var(--ff-display); font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -.5px; }
+body.ar .profile-name { font-family: var(--ff-ar); }
+.profile-email { font-size: .82rem; color: rgba(255,255,255,.35); margin-top: 3px; }
+.profile-stats { display: flex; gap: 28px; margin-top: 12px; flex-wrap: wrap; }
+.profile-stat-num { font-family: var(--ff-display); font-size: 1.4rem; font-weight: 800; color: #fff; line-height: 1; }
+.profile-stat-lbl { font-size: .68rem; color: rgba(255,255,255,.3); text-transform: uppercase; letter-spacing: .8px; margin-top: 3px; }
+.profile-logout {
+  margin-left: auto;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.5);
+  border-radius: var(--r-sm);
+  padding: 8px 16px;
+  font-size: .79rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+.profile-logout:hover { background: rgba(255,255,255,.14); color: #fff; }
+
+/* ═══════════════════════════════════════════
+   MODAL SYSTEM
+═══════════════════════════════════════════ */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,13,20,.6);
+  backdrop-filter: blur(8px);
+  z-index: 800;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.overlay.on { display: flex; }
+.modal-box {
+  background: var(--c-white);
+  border-radius: var(--r-xl);
+  max-width: 420px;
+  width: 100%;
+  padding: 36px;
+  position: relative;
+  animation: popIn .24s var(--ease-spring);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+@keyframes popIn {
+  from { opacity:0; transform:scale(.94) translateY(10px); }
+  to   { opacity:1; transform:none; }
+}
+.modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 30px; height: 30px;
+  background: var(--c-paper);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: .85rem;
+  color: var(--c-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+}
+body.ar .modal-close { right: auto; left: 14px; }
+.modal-close:hover { background: var(--c-border); color: var(--c-ink); }
+.modal-box h3 { font-size: 1.55rem; font-weight: 700; margin-bottom: 5px; letter-spacing: -.5px; }
+.modal-sub { font-size: .84rem; color: var(--c-muted); margin-bottom: 24px; line-height: 1.65; }
+
+.form-group { margin-bottom: 14px; }
+.form-label {
+  font-size: .71rem;
+  font-weight: 700;
+  color: var(--c-muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  display: block;
+  margin-bottom: 6px;
+}
+.form-input {
+  width: 100%;
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  font-size: .88rem;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  background: var(--c-white);
+  color: var(--c-ink);
+}
+.form-input:focus {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-glow);
+}
+.form-row { display: flex; gap: 10px; }
+.form-row .form-group { flex: 1; }
+
+.interests-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.interest-btn {
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  text-align: center;
+  cursor: pointer;
+  font-size: .82rem;
+  font-weight: 500;
+  transition: all .18s;
+  background: transparent;
+  color: var(--c-muted);
+}
+.interest-btn.on { border-color: var(--c-accent); background: var(--c-accent-lt); color: var(--c-accent); }
+.interest-btn:hover:not(.on) { border-color: var(--c-ink); color: var(--c-ink); }
+
+.form-submit {
+  width: 100%;
+  background: var(--c-ink);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  padding: 13px;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all .2s;
+  letter-spacing: .3px;
+  font-family: var(--ff-body);
+}
+.form-submit:hover { background: var(--c-accent); transform: translateY(-1px); box-shadow: var(--sh-accent); }
+.form-submit:disabled { background: var(--c-muted2); transform: none; box-shadow: none; cursor: not-allowed; }
+
+.auth-alt { text-align: center; font-size: .82rem; color: var(--c-muted); margin-top: 16px; }
+.auth-alt a { color: var(--c-accent); cursor: pointer; font-weight: 600; }
+.auth-alt a:hover { text-decoration: underline; }
+.demo-link {
+  display: block;
+  text-align: center;
+  font-size: .78rem;
+  color: var(--c-muted2);
+  margin-top: 10px;
+  cursor: pointer;
+  font-family: var(--ff-mono);
+  padding: 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--c-border);
+  transition: all .18s;
+}
+.demo-link:hover { border-color: var(--c-accent); color: var(--c-accent); }
+
+.divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+.divider span { font-size: .72rem; color: var(--c-muted2); white-space: nowrap; }
+.divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--c-border); }
+
+/* ═══════════════════════════════════════════
+   DEAL DETAIL MODAL
+═══════════════════════════════════════════ */
+.deal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,13,20,.6);
+  backdrop-filter: blur(8px);
+  z-index: 800;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.deal-overlay.on { display: flex; }
+.deal-modal-box {
+  background: var(--c-white);
+  border-radius: var(--r-xl);
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  animation: popIn .24s var(--ease-spring);
+  max-height: 92vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.deal-modal-header {
+  padding: 32px 28px 22px;
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+.deal-modal-icon-wrap {
+  width: 64px; height: 64px;
+  border-radius: var(--r-md);
+  background: var(--c-paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+.deal-modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 30px; height: 30px;
+  background: var(--c-paper);
+  border: none; border-radius: 50%;
+  cursor: pointer; font-size: .85rem;
+  color: var(--c-muted);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+body.ar .deal-modal-close { right: auto; left: 14px; }
+.deal-modal-close:hover { background: var(--c-border); }
+.deal-modal-title { font-family: var(--ff-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; letter-spacing: -.3px; }
+body.ar .deal-modal-title { font-family: var(--ff-ar); }
+.deal-modal-meta { font-size: .76rem; color: var(--c-muted2); display: flex; gap: 10px; flex-wrap: wrap; }
+.deal-modal-body { padding: 22px 28px; }
+.deal-modal-desc { font-size: .85rem; color: var(--c-muted); line-height: 1.75; margin-bottom: 20px; }
+.deal-modal-code-wrap {
+  background: var(--c-paper);
+  border: 2px dashed var(--c-border2);
+  border-radius: var(--r-md);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.deal-modal-code-lbl { font-size: .67rem; text-transform: uppercase; letter-spacing: .8px; color: var(--c-muted2); margin-bottom: 4px; font-weight: 600; }
+.deal-modal-code-val { font-family: var(--ff-mono); font-size: 1.3rem; font-weight: 500; color: var(--c-accent); letter-spacing: 2px; }
+.deal-modal-copy {
+  background: var(--c-ink);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 10px 18px;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s;
+  flex-shrink: 0;
+  letter-spacing: .3px;
+}
+.deal-modal-copy:hover { background: var(--c-accent); }
+.deal-modal-copy.copied { background: var(--c-green); }
+.deal-modal-visit {
+  display: block;
+  width: 100%;
+  background: var(--c-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  padding: 14px;
+  text-align: center;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: .3px;
+  transition: all .2s;
+  margin-bottom: 16px;
+  font-family: var(--ff-body);
+  text-decoration: none;
+}
+.deal-modal-visit:hover { background: #1a58ff; transform: translateY(-1px); box-shadow: var(--sh-accent); }
+.ai-insights-box {
+  background: var(--c-accent-lt);
+  border: 1px solid rgba(20,73,232,.12);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+}
+.ai-insights-title { font-size: .67rem; text-transform: uppercase; letter-spacing: 1px; color: var(--c-accent); font-weight: 700; margin-bottom: 10px; }
+.ai-insight-row { font-size: .8rem; color: var(--c-ink); padding: 4px 0; display: flex; align-items: flex-start; gap: 8px; }
+.ai-insight-row::before { content: '→'; color: var(--c-accent); font-size: .8rem; flex-shrink: 0; margin-top: 1px; }
+
+/* ═══════════════════════════════════════════
+   AI CHAT
+═══════════════════════════════════════════ */
+.chat-fab-area { position: fixed; bottom: 28px; right: 28px; z-index: 600; }
+body.ar .chat-fab-area { right: auto; left: 28px; }
+
+.chat-window {
+  position: absolute;
+  bottom: 68px;
+  right: 0;
+  width: 360px;
+  background: var(--c-white);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-lg), 0 0 0 1px var(--c-border);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: bottom right;
+}
+body.ar .chat-window { right: auto; left: 0; transform-origin: bottom left; }
+.chat-window.on { display: flex; animation: chatOpen .25s var(--ease-spring); }
+@keyframes chatOpen { from { opacity:0; transform:scale(.9) translateY(8px); } to { opacity:1; transform:none; } }
+
+.chat-head {
+  background: var(--c-ink);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.chat-head-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-accent), #4D7AFF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.chat-head-name { font-family: var(--ff-display); font-size: .9rem; font-weight: 700; color: #fff; }
+body.ar .chat-head-name { font-family: var(--ff-ar); }
+.chat-head-status { font-size: .67rem; color: rgba(255,255,255,.35); margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+.chat-status-dot { width: 5px; height: 5px; background: var(--c-green); border-radius: 50%; }
+.chat-close-btn {
+  background: rgba(255,255,255,.1);
+  border: none;
+  color: rgba(255,255,255,.5);
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: auto;
+  font-size: .8rem;
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+body.ar .chat-close-btn { margin-left: 0; margin-right: auto; }
+.chat-close-btn:hover { background: rgba(255,255,255,.18); color: #fff; }
+
+.chat-msgs { flex: 1; max-height: 320px; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.chat-msg { display: flex; gap: 8px; align-items: flex-end; }
+.chat-msg.user { flex-direction: row-reverse; }
+.chat-bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: .82rem;
+  line-height: 1.6;
+}
+.chat-msg.bot .chat-bubble {
+  background: var(--c-paper);
+  color: var(--c-ink);
+  border: 1px solid var(--c-border);
+  border-bottom-left-radius: 4px;
+}
+body.ar .chat-msg.bot .chat-bubble { border-bottom-left-radius: 16px; border-bottom-right-radius: 4px; }
+.chat-msg.user .chat-bubble {
+  background: var(--c-accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+body.ar .chat-msg.user .chat-bubble { border-bottom-right-radius: 16px; border-bottom-left-radius: 4px; }
+.chat-msg-avt {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-accent), #4D7AFF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8rem;
+  flex-shrink: 0;
+}
+.chat-time { font-size: .6rem; color: var(--c-muted2); margin-top: 3px; }
+.typing-indicator { display: flex; gap: 3px; padding: 11px 14px; background: var(--c-paper); border-radius: 16px; border-bottom-left-radius: 4px; width: fit-content; border: 1px solid var(--c-border); }
+.typing-dot { width: 5px; height: 5px; background: var(--c-muted2); border-radius: 50%; animation: tyBounce .9s infinite; }
+.typing-dot:nth-child(2) { animation-delay: .15s; }
+.typing-dot:nth-child(3) { animation-delay: .3s; }
+@keyframes tyBounce { 0%,80%,100% { transform:translateY(0); } 40% { transform:translateY(-5px); } }
+
+.chat-quick-replies { padding: 0 14px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+.quick-reply {
+  background: var(--c-paper);
+  border: 1px solid var(--c-border);
+  border-radius: 50px;
+  padding: 5px 12px;
+  font-size: .73rem;
+  color: var(--c-accent);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all .18s;
+}
+.quick-reply:hover { background: var(--c-accent-lt); border-color: var(--c-accent); }
+
+.chat-footer { padding: 10px; border-top: 1px solid var(--c-border); display: flex; gap: 8px; }
+.chat-input {
+  flex: 1;
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-sm);
+  padding: 9px 13px;
+  font-size: .84rem;
+  outline: none;
+  transition: border-color .2s;
+  background: var(--c-paper);
+  color: var(--c-ink);
+}
+.chat-input:focus { border-color: var(--c-accent); }
+.chat-send-btn {
+  background: var(--c-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: .95rem;
+  transition: all .18s;
+  flex-shrink: 0;
+}
+.chat-send-btn:hover { background: #1a58ff; }
+
+.chat-fab-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--c-ink);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 8px 28px rgba(10,13,20,.3);
+  transition: all .2s var(--ease-spring);
+  position: relative;
+}
+.chat-fab-btn:hover { transform: scale(1.1); background: var(--c-accent); box-shadow: var(--sh-accent); }
+.chat-fab-badge {
+  position: absolute;
+  top: -3px; right: -3px;
+  width: 18px; height: 18px;
+  background: var(--c-accent);
+  border-radius: 50%;
+  font-size: .6rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--c-paper);
+  color: #fff;
+  font-family: var(--ff-mono);
+}
+body.ar .chat-fab-badge { right: auto; left: -3px; }
+
+/* ═══════════════════════════════════════════
+   SKELETON LOADING
+═══════════════════════════════════════════ */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skel {
+  background: linear-gradient(90deg, var(--c-paper) 25%, var(--c-border) 50%, var(--c-paper) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--r-lg);
+  min-height: 320px;
+}
+
+/* ═══════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════ */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--c-muted);
+}
+.empty-state-icon { font-size: 3rem; margin-bottom: 14px; opacity: .5; }
+.empty-state-title { font-family: var(--ff-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; color: var(--c-ink); }
+.empty-state p { font-size: .85rem; }
+
+/* ═══════════════════════════════════════════
+   AI BANNER
+═══════════════════════════════════════════ */
+.ai-result-banner {
+  background: linear-gradient(90deg, var(--c-accent-lt), #ECF6FF);
+  border: 1px solid rgba(20,73,232,.15);
+  border-radius: var(--r-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  font-size: .84rem;
+  line-height: 1.6;
+}
+.ai-result-banner strong { color: var(--c-accent); }
+
+/* ═══════════════════════════════════════════
+   SPINNER
+═══════════════════════════════════════════ */
+.spinner {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 2.5px solid var(--c-border);
+  border-top-color: var(--c-accent);
+  border-radius: 50%;
+  animation: spin .65s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+.toast-container {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  pointer-events: none;
+}
+.toast {
+  background: var(--c-ink);
+  color: #fff;
+  padding: 11px 22px;
+  border-radius: 50px;
+  font-size: .82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transform: translateY(70px);
+  opacity: 0;
+  transition: all .28s var(--ease-spring);
+  box-shadow: 0 8px 28px rgba(10,13,20,.25);
+  letter-spacing: .2px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  background: var(--c-ink);
+  padding: 56px 5% 28px;
+  position: relative;
+  overflow: hidden;
+}
+footer::before {
+  content: 'Dealna';
+  position: absolute;
+  right: 5%;
+  bottom: -10px;
+  font-family: var(--ff-display);
+  font-size: 10rem;
+  font-weight: 800;
+  color: rgba(255,255,255,.03);
+  pointer-events: none;
+  letter-spacing: -5px;
+  line-height: 1;
+}
+body.ar footer::before { right: auto; left: 5%; content: 'ديلنا'; }
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 1;
+}
+.footer-brand-name { font-family: var(--ff-display); font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: -1px; cursor: pointer; display: block; margin-bottom: 10px; }
+.footer-brand-desc { font-size: .8rem; color: rgba(255,255,255,.28); line-height: 1.8; max-width: 220px; font-weight: 300; }
+.footer-col-title { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,.25); margin-bottom: 14px; }
+.footer-link { display: block; font-size: .8rem; color: rgba(255,255,255,.35); margin-bottom: 8px; cursor: pointer; transition: color .18s; }
+.footer-link:hover { color: #fff; }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.07);
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: .74rem;
+  color: rgba(255,255,255,.2);
+  flex-wrap: wrap;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .hero-content { grid-template-columns: 1fr; }
+  .hero-panel { display: none; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  :root { --nav-h: 58px; }
+  nav { padding: 0 4%; }
+  .nav-links { gap: 0; }
+  .nav-link { padding: 7px 10px; font-size: .78rem; }
+  .nav-link[data-page="about"],
+  .nav-link[data-page="stores"] { display: none; }
+  #api-lbl { display: none; }
+  .hero { padding: 70px 4% 60px; min-height: auto; }
+  .hero-headline { font-size: 2rem; letter-spacing: -1.2px; }
+  .hero-sub { font-size: .88rem; }
+  .section { padding: 44px 4%; }
+  .filter-row { padding: 10px 4%; top: 58px; }
+  .filter-search { margin-left: 0; width: 100%; }
+  .filter-search input { width: 100%; }
+  .deals-grid { grid-template-columns: 1fr; }
+  .stores-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  footer::before { display: none; }
+  .chat-window { width: calc(100vw - 48px); }
+  body.ar .chat-window { width: calc(100vw - 48px); }
+  .page-hero { padding: 28px 4% 22px; }
+  .page-hero h2 { font-size: 1.55rem; }
+  .about-hero-wrap { padding: 56px 4%; }
+  .profile-hero { padding: 28px 4%; }
+}
+@media (max-width: 480px) {
+  .nav-logo { margin-right: 12px; }
+  .btn-ghost { display: none; }
+  .hero-metrics { gap: 18px; }
+  .hero-metric-num { font-size: 1.5rem; }
+  .hero-search-form { flex-direction: column; }
+  .hero-search-btn { width: 100%; padding: 12px; }
+  .section-title { font-size: 1.3rem; }
+  .features-grid { grid-template-columns: 1fr; }
+  .cat-strip { gap: 5px; }
+  .modal-box { padding: 24px; border-radius: var(--r-lg); }
+  .deal-modal-box { border-radius: var(--r-lg); }
+  .deal-modal-header { padding: 24px 20px 18px; }
+  .deal-modal-body { padding: 18px 20px; }
+  .form-row { flex-direction: column; gap: 0; }
+  footer { padding: 40px 4% 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════
+     SETUP BANNER
+══════════════════════ -->
+<div id="setup-banner">
+  <strong data-en="Backend URL" data-ar="رابط الخادم">Backend URL</strong>
+  <input id="setup-input" type="url" placeholder="https://dealna-backend.vercel.app" autocomplete="off"/>
+  <button class="setup-connect" onclick="connectBackend()" data-en="Connect" data-ar="اتصال">Connect</button>
+  <button class="setup-dismiss" onclick="closeBanner()" data-en="Dismiss" data-ar="إغلاق">Dismiss</button>
+</div>
+
+<!-- ══════════════════════
+     NAVIGATION
+══════════════════════ -->
+<nav>
+  <div class="nav-logo" onclick="goto('home')">
+    <span>Dealna</span>
+    <span class="nav-logo-dot"></span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" data-page="home" onclick="goto('home')" data-en="Home" data-ar="الرئيسية">Home</button>
+    <button class="nav-link" data-page="deals" onclick="goto('deals')" data-en="Deals" data-ar="العروض">Deals</button>
+    <button class="nav-link" data-page="stores" onclick="goto('stores')" data-en="Stores" data-ar="المتاجر">Stores</button>
+    <button class="nav-link" data-page="about" onclick="goto('about')" data-en="About" data-ar="حول">About</button>
+  </div>
+  <div class="nav-right">
+    <div class="api-status">
+      <span class="api-dot" id="api-dot"></span>
+      <span id="api-lbl" style="font-size:.72rem;color:var(--c-muted2)" data-en="Not connected" data-ar="غير متصل">Not connected</span>
+    </div>
+    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">AR</button>
+    <button class="btn-ghost" id="btn-signin" onclick="openAuth('login')" data-en="Sign in" data-ar="تسجيل الدخول">Sign in</button>
+    <button class="btn-solid" id="btn-getstarted" onclick="openAuth('signup')" data-en="Get started" data-ar="ابدأ">Get started</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════
+     HOME PAGE
+══════════════════════ -->
+<div id="page-home" class="page on">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-bg-circle"></div>
+      <div class="hero-bg-circle"></div>
+      <div class="hero-bg-circle"></div>
+    </div>
+    <div class="hero-grid-lines"></div>
+    <div class="hero-content">
+      <div>
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-dot">✦</div>
+          <span data-en="Morocco's first AI-powered deals platform" data-ar="أول منصة عروض بالذكاء الاصطناعي في المغرب">Morocco's first AI-powered deals platform</span>
+        </div>
+        <h1 class="hero-headline" data-en="Smarter <em>deals</em>, built for Morocco" data-ar="عروض <em>ذكية</em>، صُنعت للمغرب">Smarter <em>deals</em>, built for Morocco</h1>
+        <p class="hero-sub" data-en="AI-curated promo codes and exclusive offers from Morocco's top stores — updated daily, personalized for you." data-ar="رموز ترويجية منتقاة بالذكاء الاصطناعي وعروض حصرية من أفضل متاجر المغرب — تُحدَّث يومياً ومخصصة لك.">AI-curated promo codes and exclusive offers from Morocco's top stores — updated daily, personalized for you.</p>
+        <div class="hero-search-form">
+          <input id="hero-q" data-en-placeholder="Ask AI — 'cheap flights from Casablanca'…" data-ar-placeholder="اسأل الذكاء الاصطناعي — 'رحلات رخيصة من الدار البيضاء'…" placeholder="Ask AI — 'cheap flights from Casablanca'…" onkeydown="if(event.key==='Enter')heroSearch()"/>
+          <button class="hero-search-btn" onclick="heroSearch()" data-en="Search with AI" data-ar="بحث بالذكاء الاصطناعي">Search with AI</button>
+        </div>
+        <div class="hero-tags" id="hero-tags">
+          <span class="hero-tag" onclick="filterHome('Food')" data-en="Food" data-ar="طعام">Food</span>
+          <span class="hero-tag" onclick="filterHome('Fashion')" data-en="Fashion" data-ar="أزياء">Fashion</span>
+          <span class="hero-tag" onclick="filterHome('Electronics')" data-en="Electronics" data-ar="إلكترونيات">Electronics</span>
+          <span class="hero-tag" onclick="filterHome('Beauty')" data-en="Beauty" data-ar="جمال">Beauty</span>
+          <span class="hero-tag" onclick="filterHome('Travel')" data-en="Travel" data-ar="سفر">Travel</span>
+        </div>
+        <div class="hero-metrics">
+          <div>
+            <div class="hero-metric-num" id="stat-deals">—</div>
+            <div class="hero-metric-lbl" data-en="Active Deals" data-ar="عروض نشطة">Active Deals</div>
+          </div>
+          <div>
+            <div class="hero-metric-num" id="stat-stores">—</div>
+            <div class="hero-metric-lbl" data-en="Partner Stores" data-ar="متاجر شريكة">Partner Stores</div>
+          </div>
+          <div>
+            <div class="hero-metric-num">AI</div>
+            <div class="hero-metric-lbl" data-en="Powered" data-ar="مدعوم">Powered</div>
+          </div>
+        </div>
+      </div>
+      <!-- Right panel (hides on mobile) -->
+      <div class="hero-panel">
+        <div class="panel-card">
+          <div class="panel-label" data-en="Top Deals Right Now" data-ar="أفضل العروض الآن">Top Deals Right Now</div>
+          <div id="hero-preview">
+            <div style="color:rgba(255,255,255,.2);font-size:.79rem" data-en="Loading…" data-ar="جاري التحميل…">Loading…</div>
+          </div>
+        </div>
+        <div class="panel-card">
+          <div class="panel-label" data-en="AI Categories" data-ar="فئات الذكاء الاصطناعي">AI Categories</div>
+          <div class="ai-categories">
+            <span class="ai-cat-chip" data-en="Food & Delivery" data-ar="طعام وتوصيل">Food & Delivery</span>
+            <span class="ai-cat-chip" data-en="Fashion" data-ar="أزياء">Fashion</span>
+            <span class="ai-cat-chip" data-en="Electronics" data-ar="إلكترونيات">Electronics</span>
+            <span class="ai-cat-chip" data-en="Travel" data-ar="سفر">Travel</span>
+            <span class="ai-cat-chip" data-en="Beauty" data-ar="جمال">Beauty</span>
+            <span class="ai-cat-chip" data-en="Local Services" data-ar="خدمات محلية">Local Services</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner" id="ticker-inner">
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="AI-powered deals updated daily" data-ar="عروض يومية بالذكاء الاصطناعي">AI-powered deals updated daily</span></span>
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Exclusive codes for Morocco" data-ar="رموز حصرية للمغرب">Exclusive codes for Morocco</span></span>
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Jumia — Flash Sales Live" data-ar="جوميا — عروض فورية">Jumia — Flash Sales Live</span></span>
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Verified promo codes only" data-ar="رموز ترويجية موثقة فقط">Verified promo codes only</span></span>
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Free to use, always" data-ar="مجاني دائماً">Free to use, always</span></span>
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="AI-powered deals updated daily" data-ar="عروض يومية بالذكاء الاصطناعي">AI-powered deals updated daily</span></span>
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Exclusive codes for Morocco" data-ar="رموز حصرية للمغرب">Exclusive codes for Morocco</span></span>
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Jumia — Flash Sales Live" data-ar="جوميا — عروض فورية">Jumia — Flash Sales Live</span></span>
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Verified promo codes only" data-ar="رموز ترويجية موثقة فقط">Verified promo codes only</span></span>
+      <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Free to use, always" data-ar="مجاني دائماً">Free to use, always</span></span>
+    </div>
+  </div>
+
+  <!-- Featured Strip -->
+  <section class="section" style="padding-bottom:0">
+    <div class="section-inner">
+      <div class="section-head">
+        <div>
+          <div class="section-title" data-en="Featured This Week" data-ar="مميز هذا الأسبوع">Featured This Week</div>
+          <div class="section-subtitle" data-en="Hand-picked by our AI" data-ar="منتقى بواسطة الذكاء الاصطناعي">Hand-picked by our AI</div>
+        </div>
+        <button class="section-action" onclick="goto('deals')" data-en="View all" data-ar="عرض الكل">View all</button>
+      </div>
+      <div class="featured-strip" id="featured-strip">
+        <div class="featured-item" style="min-height:160px">
+          <div class="featured-item-bg featured-item-bg-0"></div>
+          <div class="featured-item-inner">
+            <div class="featured-item-cat" data-en="Loading…" data-ar="جاري التحميل…">Loading…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hot Deals -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-head">
+        <div>
+          <div class="section-title" data-en="Hot Deals Today" data-ar="أحدث العروض اليوم">Hot Deals Today</div>
+          <div class="section-subtitle" data-en="Refreshed by AI every 24 hours" data-ar="يتم تحديثها بالذكاء الاصطناعي كل 24 ساعة">Refreshed by AI every 24 hours</div>
+        </div>
+        <button class="section-action" onclick="goto('deals')" data-en="See all deals" data-ar="عرض جميع العروض">See all deals</button>
+      </div>
+
+      <!-- Category pills -->
+      <div class="cat-strip" id="home-cats">
+        <button class="cat-pill on" data-cat="" onclick="filterHome('')">
+          <span data-en="All" data-ar="الكل">All</span>
+        </button>
+        <button class="cat-pill" data-cat="Food" onclick="filterHome('Food')">
+          <span class="cat-pill-icon">🍔</span>
+          <span data-en="Food" data-ar="طعام">Food</span>
+        </button>
+        <button class="cat-pill" data-cat="Fashion" onclick="filterHome('Fashion')">
+          <span class="cat-pill-icon">👗</span>
+          <span data-en="Fashion" data-ar="أزياء">Fashion</span>
+        </button>
+        <button class="cat-pill" data-cat="Electronics" onclick="filterHome('Electronics')">
+          <span class="cat-pill-icon">📱</span>
+          <span data-en="Electronics" data-ar="إلكترونيات">Electronics</span>
+        </button>
+        <button class="cat-pill" data-cat="Beauty" onclick="filterHome('Beauty')">
+          <span class="cat-pill-icon">💄</span>
+          <span data-en="Beauty" data-ar="جمال">Beauty</span>
+        </button>
+        <button class="cat-pill" data-cat="Travel" onclick="filterHome('Travel')">
+          <span class="cat-pill-icon">✈️</span>
+          <span data-en="Travel" data-ar="سفر">Travel</span>
+        </button>
+        <button class="cat-pill" data-cat="Local" onclick="filterHome('Local')">
+          <span class="cat-pill-icon">🌿</span>
+          <span data-en="Local" data-ar="محلي">Local</span>
+        </button>
+      </div>
+
+      <div id="ai-result-area" style="display:none" class="ai-result-banner">
+        <span style="font-size:1.2rem;flex-shrink:0">✦</span>
+        <p id="ai-result-text">Searching…</p>
+      </div>
+
+      <div class="deals-grid" id="home-grid"></div>
+    </div>
+  </section>
+
+  <!-- Stores preview -->
+  <section class="section" style="background:var(--c-white);border-top:1px solid var(--c-border)">
+    <div class="section-inner">
+      <div class="section-head">
+        <div>
+          <div class="section-title" data-en="Partner Stores" data-ar="المتاجر الشريكة">Partner Stores</div>
+          <div class="section-subtitle" data-en="Exclusive deals from Morocco's best" data-ar="عروض حصرية من أفضل المتاجر">Exclusive deals from Morocco's best</div>
+        </div>
+        <button class="section-action" onclick="goto('stores')" data-en="All stores" data-ar="جميع المتاجر">All stores</button>
+      </div>
+      <div class="stores-grid" id="home-stores"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════
+     DEALS PAGE
+══════════════════════ -->
+<div id="page-deals" class="page">
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <h2 data-en="All Deals &amp; Promo Codes" data-ar="جميع العروض والرموز الترويجية">All Deals &amp; Promo Codes</h2>
+      <p data-en="Verified and AI-ranked — updated daily from Morocco's top stores" data-ar="موثقة ومرتبة بالذكاء الاصطناعي — تُحدَّث يومياً من أفضل متاجر المغرب">Verified and AI-ranked — updated daily from Morocco's top stores</p>
+    </div>
+  </div>
+  <div class="filter-row">
+    <span class="filter-row-label" data-en="Filter" data-ar="فلتر">Filter</span>
+    <button class="filter-btn on" data-cat="" onclick="filterDeals('')" data-en="All" data-ar="الكل">All</button>
+    <button class="filter-btn" data-cat="Food" onclick="filterDeals('Food')" data-en="Food" data-ar="طعام">Food</button>
+    <button class="filter-btn" data-cat="Fashion" onclick="filterDeals('Fashion')" data-en="Fashion" data-ar="أزياء">Fashion</button>
+    <button class="filter-btn" data-cat="Electronics" onclick="filterDeals('Electronics')" data-en="Electronics" data-ar="إلكترونيات">Electronics</button>
+    <button class="filter-btn" data-cat="Beauty" onclick="filterDeals('Beauty')" data-en="Beauty" data-ar="جمال">Beauty</button>
+    <button class="filter-btn" data-cat="Travel" onclick="filterDeals('Travel')" data-en="Travel" data-ar="سفر">Travel</button>
+    <button class="filter-btn" data-cat="Local" onclick="filterDeals('Local')" data-en="Local" data-ar="محلي">Local</button>
+    <div class="filter-search">
+      <input id="deals-search" data-en-placeholder="Search deals…" data-ar-placeholder="ابحث عن عروض…" placeholder="Search deals…" oninput="fetchDeals()"/>
+    </div>
+  </div>
+  <section class="section">
+    <div class="section-inner">
+      <div class="deals-grid" id="deals-grid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════
+     STORES PAGE
+══════════════════════ -->
+<div id="page-stores" class="page">
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <h2 data-en="Partner Stores" data-ar="المتاجر الشريكة">Partner Stores</h2>
+      <p data-en="Browse deals by your favourite stores" data-ar="تصفح العروض من متاجرك المفضلة">Browse deals by your favourite stores</p>
+    </div>
+  </div>
+  <section class="section">
+    <div class="section-inner">
+      <div class="stores-grid" id="all-stores-grid" style="grid-template-columns:repeat(auto-fill,minmax(175px,1fr))"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════
+     ABOUT PAGE
+══════════════════════ -->
+<div id="page-about" class="page">
+  <div class="about-hero-wrap">
+    <div class="hero-bg">
+      <div class="hero-bg-circle"></div>
+      <div class="hero-bg-circle"></div>
+    </div>
+    <div class="about-inner">
+      <h2 data-en="Morocco deserves <span>better deals</span>" data-ar="المغرب يستحق <span>عروضاً أفضل</span>">Morocco deserves <span>better deals</span></h2>
+      <p data-en="Dealna is the first platform in Morocco to use AI to find, rank, and personalise discount codes and deals — completely free." data-ar="ديلنا هي أول منصة في المغرب تستخدم الذكاء الاصطناعي للعثور على رموز الخصم وتصنيفها وتخصيصها — مجاناً تماماً.">Dealna is the first platform in Morocco to use AI to find, rank, and personalise discount codes and deals — completely free.</p>
+      <button class="btn-solid" onclick="goto('deals')" data-en="Explore deals" data-ar="استكشف العروض">Explore deals</button>
+    </div>
+  </div>
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="section-title" data-en="Why Dealna?" data-ar="لماذا ديلنا؟">Why Dealna?</div>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrap">✦</div>
+          <h4 data-en="AI Deal Discovery" data-ar="اكتشاف بالذكاء الاصطناعي">AI Deal Discovery</h4>
+          <p data-en="Our AI constantly monitors top Moroccan stores and ranks deals by real value — not just headline discounts." data-ar="يراقب الذكاء الاصطناعي باستمرار أفضل المتاجر المغربية ويصنف العروض حسب القيمة الحقيقية.">Our AI constantly monitors top Moroccan stores and ranks deals by real value — not just headline discounts.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap">✓</div>
+          <h4 data-en="Verified Codes Only" data-ar="رموز موثقة فقط">Verified Codes Only</h4>
+          <p data-en="Every promo code is tested before it goes live. No expired codes, ever." data-ar="كل رمز ترويجي يتم اختباره قبل النشر. لا رموز منتهية الصلاحية أبداً.">Every promo code is tested before it goes live. No expired codes, ever.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap">◎</div>
+          <h4 data-en="Built for Morocco" data-ar="صُنع للمغرب">Built for Morocco</h4>
+          <p data-en="Bilingual Arabic and English. Local stores. Moroccan context. Designed with the Moroccan shopper in mind." data-ar="ثنائي اللغة عربي وإنجليزي. متاجر محلية. سياق مغربي. مصمم مع مراعاة المتسوق المغربي.">Bilingual Arabic and English. Local stores. Moroccan context. Designed with the Moroccan shopper in mind.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap">↻</div>
+          <h4 data-en="Updated Daily" data-ar="تحديثات يومية">Updated Daily</h4>
+          <p data-en="Our automated scraper refreshes deals every 24 hours — you always see what's live now." data-ar="يُحدِّث الجاذب الآلي العروض كل 24 ساعة — ترى دائماً ما هو متاح الآن.">Our automated scraper refreshes deals every 24 hours — you always see what's live now.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap">❖</div>
+          <h4 data-en="Personalised for You" data-ar="مخصص لك">Personalised for You</h4>
+          <p data-en="Sign up and our AI learns your preferences to surface the deals most relevant to you." data-ar="سجّل وسيتعلم الذكاء الاصطناعي تفضيلاتك لعرض العروض الأكثر صلة بك.">Sign up and our AI learns your preferences to surface the deals most relevant to you.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap">○</div>
+          <h4 data-en="Always Free" data-ar="مجاني دائماً">Always Free</h4>
+          <p data-en="Dealna is free for shoppers, forever. We earn small affiliate commissions — never from you." data-ar="ديلنا مجاني للمتسوقين إلى الأبد. نكسب عمولات انتساب صغيرة — ليس منك.">Dealna is free for shoppers, forever. We earn small affiliate commissions — never from you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════
+     PROFILE PAGE
+══════════════════════ -->
+<div id="page-profile" class="page">
+  <div class="profile-hero">
+    <div class="profile-avatar-wrap" id="profile-av">A</div>
+    <div>
+      <div class="profile-name" id="profile-name">My Account</div>
+      <div class="profile-email" id="profile-email"></div>
+      <div class="profile-stats">
+        <div>
+          <div class="profile-stat-num" id="profile-saved-count">0</div>
+          <div class="profile-stat-lbl" data-en="Saved Deals" data-ar="عروض محفوظة">Saved Deals</div>
+        </div>
+        <div>
+          <div class="profile-stat-num">✦</div>
+          <div class="profile-stat-lbl" data-en="AI Member" data-ar="عضو ذكاء اصطناعي">AI Member</div>
+        </div>
+      </div>
+    </div>
+    <button class="profile-logout" onclick="doLogout()" data-en="Sign out" data-ar="تسجيل الخروج">Sign out</button>
+  </div>
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="section-title" data-en="Saved Deals" data-ar="العروض المحفوظة">Saved Deals</div>
+      </div>
+      <div class="deals-grid" id="saved-grid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════
+     FOOTER
+══════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <span class="footer-brand-name" onclick="goto('home')">Dealna</span>
+      <p class="footer-brand-desc" data-en="Morocco's AI-powered deals platform. Save smarter on everything you love." data-ar="منصة العروض المدعومة بالذكاء الاصطناعي في المغرب. وفّر بذكاء على كل ما تحب.">Morocco's AI-powered deals platform. Save smarter on everything you love.</p>
+    </div>
+    <div>
+      <div class="footer-col-title" data-en="Explore" data-ar="استكشف">Explore</div>
+      <a class="footer-link" onclick="goto('home')" data-en="Home" data-ar="الرئيسية">Home</a>
+      <a class="footer-link" onclick="goto('deals')" data-en="All Deals" data-ar="كل العروض">All Deals</a>
+      <a class="footer-link" onclick="goto('stores')" data-en="Stores" data-ar="المتاجر">Stores</a>
+      <a class="footer-link" onclick="goto('about')" data-en="About" data-ar="حول">About</a>
+    </div>
+    <div>
+      <div class="footer-col-title" data-en="Categories" data-ar="الفئات">Categories</div>
+      <a class="footer-link" data-en="Food" data-ar="طعام">Food</a>
+      <a class="footer-link" data-en="Fashion" data-ar="أزياء">Fashion</a>
+      <a class="footer-link" data-en="Electronics" data-ar="إلكترونيات">Electronics</a>
+      <a class="footer-link" data-en="Beauty" data-ar="جمال">Beauty</a>
+      <a class="footer-link" data-en="Travel" data-ar="سفر">Travel</a>
+    </div>
+    <div>
+      <div class="footer-col-title" data-en="Company" data-ar="الشركة">Company</div>
+      <a class="footer-link"><span class="__cf_email__" data-cfemail="28404d444447684c4d49444649064549">[email&#160;protected]</span></a>
+      <a class="footer-link" data-en="Submit a Deal" data-ar="أضف عرضاً">Submit a Deal</a>
+      <a class="footer-link" data-en="Partner with Us" data-ar="شارك معنا">Partner with Us</a>
+      <a class="footer-link" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span data-en="© 2025 Dealna. All rights reserved." data-ar="© 2025 ديلنا. جميع الحقوق محفوظة.">© 2025 Dealna. All rights reserved.</span>
+    <span data-en="Built with AI in Morocco" data-ar="صُنع بالذكاء الاصطناعي في المغرب">Built with AI in Morocco</span>
+  </div>
+</footer>
+
+<!-- ══════════════════════
+     AI CHAT
+══════════════════════ -->
+<div class="chat-fab-area">
+  <div class="chat-window" id="chat-win">
+    <div class="chat-head">
+      <div class="chat-head-avatar">✦</div>
+      <div>
+        <div class="chat-head-name" data-en="Dealna AI" data-ar="ديلنا AI">Dealna AI</div>
+        <div class="chat-head-status">
+          <span class="chat-status-dot"></span>
+          <span data-en="Online · Powered by Groq" data-ar="متصل · مدعوم بـ Groq">Online · Powered by Groq</span>
+        </div>
+      </div>
+      <button class="chat-close-btn" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="chat-quick-replies" id="chat-qr">
+      <span class="quick-reply" onclick="sendQuick(this)" data-en="Best deals today" data-ar="أفضل عروض اليوم">Best deals today</span>
+      <span class="quick-reply" onclick="sendQuick(this)" data-en="Phones under 2000 MAD" data-ar="هواتف تحت 2000 درهم">Phones under 2000 MAD</span>
+      <span class="quick-reply" onclick="sendQuick(this)" data-en="Food promos" data-ar="عروض الطعام">Food promos</span>
+    </div>
+    <div class="chat-footer">
+      <input class="chat-input" id="chat-input" data-en-placeholder="Ask about any deal…" data-ar-placeholder="اسأل عن أي عرض…" placeholder="Ask about any deal…" onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button class="chat-send-btn" onclick="sendChat()">↑</button>
+    </div>
+  </div>
+  <button class="chat-fab-btn" onclick="toggleChat()">
+    ✦
+    <span class="chat-fab-badge">AI</span>
+  </button>
+</div>
+
+<!-- ══════════════════════
+     AUTH MODAL
+══════════════════════ -->
+<div class="overlay" id="auth-overlay" onclick="closeOverlay(event,'auth-overlay')">
+  <div class="modal-box" id="auth-modal"></div>
+</div>
+
+<!-- ══════════════════════
+     DEAL DETAIL MODAL
+══════════════════════ -->
+<div class="deal-overlay" id="deal-overlay" onclick="closeOverlay(event,'deal-overlay')">
+  <div class="deal-modal-box" id="deal-modal"></div>
+</div>
+
+<!-- ══════════════════════
+     TOAST
+══════════════════════ -->
+<div class="toast-container">
+  <div class="toast" id="toast"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+'use strict';
+
+// ─── STATE ────────────────────────────────────────
+var S = {
+  api: 'https://dealna-backend.vercel.app',
+  token: localStorage.getItem('dealna_token') || '',
+  lang: localStorage.getItem('dealna_lang') || 'en',
+  page: 'home',
+  homecat: '',
+  dealscat: '',
+  user: null,
+  chatOpen: false,
+  chatHistory: []
+};
+
+// ─── VISUAL HELPERS ───────────────────────────────
+var BG_VARIANTS = [
+  'deal-visual-bg-0','deal-visual-bg-1','deal-visual-bg-2',
+  'deal-visual-bg-3','deal-visual-bg-4'
+];
+function bgFor(i) { return BG_VARIANTS[i % BG_VARIANTS.length]; }
+
+var BADGE_MAP = {
+  hot: { cls:'badge-hot', label:'Hot' },
+  new: { cls:'badge-new', label:'New' },
+  verified: { cls:'badge-verified', label:'Verified' },
+  exclusive: { cls:'badge-exclusive', label:'Exclusive' }
+};
+var FEAT_BG = ['featured-item-bg-0','featured-item-bg-1','featured-item-bg-2','featured-item-bg-3'];
+
+// ─── UTILS ────────────────────────────────────────
+function esc(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+function storeName(d) {
+  return d.store && typeof d.store === 'object' ? (d.store.name||'') : (d.store||'');
+}
+function fmtExpiry(dt) {
+  try { return new Date(dt).toLocaleDateString('en-GB',{day:'numeric',month:'short'}); } catch(e){ return ''; }
+}
+function codeSafe(c) {
+  return String(c||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+
+// ─── TOAST ────────────────────────────────────────
+var _toastTimer;
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2800);
+}
+
+// ─── SKELETON ─────────────────────────────────────
+function skels(n) {
+  var o = '';
+  for (var i=0; i<n; i++) o += '<div class="skel"></div>';
+  return o;
+}
+
+// ─── HTTP ─────────────────────────────────────────
+async function api(path, opts) {
+  if (!S.api) throw new Error(S.lang === 'ar' ? 'لم يتم ربط الخادم' : 'No backend connected');
+  var headers = { 'Content-Type': 'application/json' };
+  if (S.token) headers['Authorization'] = 'Bearer ' + S.token;
+  var res = await fetch(S.api + path, Object.assign({}, opts||{}, {headers:headers}));
+  var data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'Error ' + res.status);
+  return data;
+}
+
+// ─── API STATUS ───────────────────────────────────
+async function ping() {
+  var dot = document.getElementById('api-dot');
+  var lbl = document.getElementById('api-lbl');
+  if (!S.api) { dot.className='api-dot'; lbl.textContent = S.lang==='ar'?'غير متصل':'Not connected'; return; }
+  try {
+    await fetch(S.api + '/', { signal: AbortSignal.timeout(4000) });
+    dot.className = 'api-dot live';
+    lbl.textContent = S.lang==='ar'?'متصل':'Connected';
+  } catch(e) {
+    dot.className = 'api-dot dead';
+    lbl.textContent = S.lang==='ar'?'غير متصل':'Offline';
+  }
+}
+
+// ─── BANNER ───────────────────────────────────────
+function connectBackend() {
+  var v = (document.getElementById('setup-input').value||'').trim().replace(/\/$/,'');
+  if (!v) { toast(S.lang==='ar'?'أدخل رابطاً صحيحاً':'Enter a valid URL'); return; }
+  S.api = v;
+  localStorage.setItem('dealna_api', v);
+  document.getElementById('setup-banner').style.display = 'none';
+  toast(S.lang==='ar'?'تم الاتصال':'Connected');
+  ping(); loadHome();
+}
+function closeBanner() { document.getElementById('setup-banner').style.display = 'none'; }
+
+// Prefill
+document.getElementById('setup-input').value = S.api;
+if (S.api) document.getElementById('setup-banner').style.display = 'none';
+
+// ─── LANGUAGE ─────────────────────────────────────
+function toggleLang() {
+  S.lang = S.lang === 'en' ? 'ar' : 'en';
+  localStorage.setItem('dealna_lang', S.lang);
+  applyLang(S.lang);
+}
+
+function applyLang(lang) {
+  var body = document.body;
+  var btn = document.getElementById('lang-btn');
+  if (lang === 'ar') {
+    body.classList.add('ar');
+    body.setAttribute('dir','rtl');
+    body.setAttribute('lang','ar');
+    if (btn) btn.textContent = 'EN';
+  } else {
+    body.classList.remove('ar');
+    body.setAttribute('dir','ltr');
+    body.setAttribute('lang','en');
+    if (btn) btn.textContent = 'AR';
+  }
+  document.querySelectorAll('[data-en][data-ar]').forEach(function(el) {
+    var t = el.getAttribute('data-' + lang);
+    if (t) el.innerHTML = t;
+  });
+  document.querySelectorAll('[data-' + lang + '-placeholder]').forEach(function(el) {
+    el.placeholder = el.getAttribute('data-' + lang + '-placeholder');
+  });
+}
+
+if (S.lang === 'ar') applyLang('ar');
+
+// ─── PAGE ROUTING ─────────────────────────────────
+function goto(page) {
+  S.page = page;
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('on'); });
+  var target = document.getElementById('page-' + page);
+  if (target) target.classList.add('on');
+  document.querySelectorAll('.nav-link').forEach(function(n){
+    n.classList.toggle('active', n.dataset.page === page);
+  });
+  window.scrollTo({ top:0, behavior:'smooth' });
+  if (page === 'deals')   fetchDeals();
+  if (page === 'stores')  fetchAllStores();
+  if (page === 'profile') loadProfile();
+}
+
+// ─── DEAL CARD RENDERER ───────────────────────────
+function dealCard(d, idx, aiMode) {
+  aiMode = aiMode || false;
+  var bg = bgFor(idx);
+  var badge = BADGE_MAP[d.tag] || BADGE_MAP['new'];
+  var badgeLabel = badge.label;
+  if (S.lang === 'ar') {
+    var arBadge = {Hot:'ساخن', New:'جديد', Verified:'موثق', Exclusive:'حصري'};
+    badgeLabel = arBadge[badge.label] || badge.label;
+  }
+  var disc = d.discountDisplay || (d.discountValue ? d.discountValue + '% OFF' : 'Deal');
+  var expiry = d.expiresAt ? fmtExpiry(d.expiresAt) : '';
+  var sn = storeName(d);
+  var saved = false;
+  if (S.user && S.user.savedDeals) {
+    for (var i=0; i<S.user.savedDeals.length; i++) {
+      var sv = S.user.savedDeals[i];
+      if ((sv._id||sv) === d._id) { saved = true; break; }
+    }
+  }
+  var aiScore = d.aiScore || 0;
+  var code = codeSafe(d.promoCode);
+  var catLabel = d.category;
+  if (S.lang === 'ar') {
+    var arCat = {Food:'طعام',Fashion:'أزياء',Electronics:'إلكترونيات',Beauty:'جمال',Travel:'سفر',Local:'محلي',Other:'أخرى'};
+    catLabel = arCat[d.category] || d.category;
+  }
+  var ctaText = S.lang === 'ar' ? 'عرض التفاصيل' : 'View deal details';
+
+  return '<div class="deal-card" onclick="openDeal(\'' + d._id + '\')">' +
+    '<div class="deal-visual ' + bg + '">' +
+      '<span class="deal-visual-icon">' + esc(d.icon||'🏷️') + '</span>' +
+      '<div class="deal-top-badge ' + badge.cls + '">' + badgeLabel + '</div>' +
+      '<button class="deal-save-btn" onclick="event.stopPropagation();doSave(\'' + d._id + '\')" title="' + (S.lang==='ar'?'حفظ':'Save') + '">' + (saved ? '♥' : '♡') + '</button>' +
+    '</div>' +
+    '<div class="deal-body">' +
+      '<div class="deal-category-line">' +
+        '<span class="deal-category-tag">' + esc(catLabel) + '</span>' +
+        (sn ? '<span class="deal-category-sep"></span><span class="deal-store-tag">' + esc(sn) + '</span>' : '') +
+      '</div>' +
+      '<div class="deal-title">' + esc(d.title) + '</div>' +
+      '<div class="deal-description">' + esc(d.description) + '</div>' +
+      '<div class="deal-promo">' +
+        '<span class="deal-promo-label">' + (S.lang==='ar'?'الرمز':'CODE') + '</span>' +
+        '<span class="deal-promo-code">' + esc(d.promoCode||'—') + '</span>' +
+        '<button class="deal-copy-btn" id="cpb-' + d._id + '" onclick="event.stopPropagation();copyCode(\'' + code + '\',\'' + d._id + '\')">' + (S.lang==='ar'?'نسخ':'Copy') + '</button>' +
+      '</div>' +
+      '<div class="deal-footer">' +
+        '<div>' +
+          '<div class="deal-discount">' + esc(disc) + '</div>' +
+          (d.originalPrice ? '<div class="deal-original">' + esc(d.originalPrice) + '</div>' : '') +
+        '</div>' +
+        (expiry ? '<div class="deal-expiry">Exp. ' + expiry + '</div>' : '') +
+      '</div>' +
+    '</div>' +
+    (aiMode ? '<div class="ai-score-wrap">' +
+      '<div class="ai-score-header">' +
+        '<span class="ai-score-lbl">AI Score</span>' +
+        '<span class="ai-score-val">' + aiScore + '/100</span>' +
+      '</div>' +
+      '<div class="ai-score-track"><div class="ai-score-fill" style="width:' + aiScore + '%"></div></div>' +
+    '</div>' : '') +
+    '<div class="deal-cta-bar">' + ctaText + '</div>' +
+  '</div>';
+}
+
+function renderGrid(id, deals, aiMode) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (!deals || !deals.length) {
+    el.innerHTML = '<div class="empty-state">' +
+      '<div class="empty-state-icon">◌</div>' +
+      '<div class="empty-state-title">' + (S.lang==='ar'?'لا توجد عروض':'No deals found') + '</div>' +
+      '<p>' + (S.lang==='ar'?'جرّب فئة مختلفة أو تحقق مرة أخرى لاحقاً':'Try a different category or check back later') + '</p>' +
+    '</div>';
+    return;
+  }
+  var html = '';
+  for (var i=0; i<deals.length; i++) html += dealCard(deals[i], i, aiMode);
+  el.innerHTML = html;
+}
+
+// ─── HOME ─────────────────────────────────────────
+async function loadHome() {
+  fetchHomeDeals('');
+  fetchHomeStores();
+  fetchHeroPreview();
+  fetchFeatured();
+}
+
+async function fetchHomeDeals(cat) {
+  var g = document.getElementById('home-grid');
+  g.innerHTML = skels(8);
+  S.homecat = cat;
+  try {
+    var q = '/api/deals?limit=8&sort=-aiScore' + (cat?'&category='+encodeURIComponent(cat):'');
+    var data = await api(q);
+    var deals = data.deals || [];
+    renderGrid('home-grid', deals);
+    document.getElementById('stat-deals').textContent = data.total || deals.length;
+  } catch(e) {
+    document.getElementById('home-grid').innerHTML =
+      '<div class="empty-state"><div class="empty-state-icon">◌</div>' +
+      '<div class="empty-state-title">' + esc(e.message) + '</div>' +
+      '<p>' + (S.lang==='ar'?'تأكد من أن الخادم متصل':'Make sure the backend is connected') + '</p></div>';
+  }
+}
+
+function filterHome(cat) {
+  S.homecat = cat;
+  document.querySelectorAll('#home-cats .cat-pill').forEach(function(b) {
+    b.classList.toggle('on', b.dataset.cat === cat);
+  });
+  document.getElementById('ai-result-area').style.display = 'none';
+  fetchHomeDeals(cat);
+}
+
+async function fetchHeroPreview() {
+  try {
+    var data = await api('/api/deals?limit=4&sort=-aiScore');
+    var deals = data.deals || [];
+    var html = '';
+    for (var i=0; i<deals.length; i++) {
+      var d = deals[i];
+      var sn = storeName(d);
+      var title = d.title.length > 40 ? d.title.substring(0,40) + '…' : d.title;
+      html += '<div class="mini-deal-row" onclick="openDeal(\'' + d._id + '\')">' +
+        '<div class="mini-icon">' + esc(d.icon||'🏷️') + '</div>' +
+        '<div class="mini-info">' +
+          '<div class="mini-title">' + esc(title) + '</div>' +
+          '<div class="mini-store">' + esc(sn) + '</div>' +
+        '</div>' +
+        '<div class="mini-badge">' + esc(d.discountDisplay||'Deal') + '</div>' +
+      '</div>';
+    }
+    document.getElementById('hero-preview').innerHTML = html || '<div style="color:rgba(255,255,255,.2);font-size:.79rem">No deals yet</div>';
+  } catch(e) {}
+}
+
+async function fetchFeatured() {
+  try {
+    var data = await api('/api/deals?limit=6&sort=-aiScore');
+    var deals = data.deals || [];
+    var html = '';
+    for (var i=0; i<deals.length; i++) {
+      var d = deals[i];
+      var sn = storeName(d);
+      var disc = d.discountDisplay || (d.discountValue ? d.discountValue + '%' : 'Deal');
+      html += '<div class="featured-item" onclick="openDeal(\'' + d._id + '\')">' +
+        '<div class="featured-item-bg ' + FEAT_BG[i % FEAT_BG.length] + '"></div>' +
+        '<div class="featured-item-inner">' +
+          '<div class="featured-item-cat">' + esc(d.category) + ' · ' + esc(sn) + '</div>' +
+          '<div class="featured-item-title">' + esc(d.title) + '</div>' +
+          '<div class="featured-item-store">' + (d.promoCode ? d.promoCode : (S.lang==='ar'?'بدون رمز':'No code needed')) + '</div>' +
+          '<div class="featured-item-discount">' + esc(disc) + '</div>' +
+          '<div class="featured-item-sub">' + (S.lang==='ar'?'انقر لعرض التفاصيل':'Click to view details') + '</div>' +
+        '</div>' +
+      '</div>';
+    }
+    document.getElementById('featured-strip').innerHTML = html || '';
+  } catch(e) {}
+}
+
+async function fetchHomeStores() {
+  try {
+    var data = await api('/api/stores');
+    var stores = (data.stores||[]).slice(0,8);
+    var html = '';
+    for (var i=0; i<stores.length; i++) {
+      var s = stores[i];
+      html += '<div class="store-tile" onclick="goto(\'deals\')">' +
+        '<div class="store-tile-icon">' + esc(s.icon||'🏪') + '</div>' +
+        '<div class="store-tile-name">' + esc(s.name) + '</div>' +
+        '<div class="store-tile-cat">' + esc(s.category||'') + '</div>' +
+        '<div class="store-tile-deals">' + (s.dealCount||0) + (S.lang==='ar'?' عروض':' deals') + '</div>' +
+      '</div>';
+    }
+    document.getElementById('home-stores').innerHTML = html;
+    document.getElementById('stat-stores').textContent = (data.stores||[]).length;
+  } catch(e) {}
+}
+
+// ─── HERO SEARCH ──────────────────────────────────
+async function heroSearch() {
+  var q = document.getElementById('hero-q').value.trim();
+  if (!q) { toast(S.lang==='ar'?'اكتب سؤالاً':'Enter a search query'); return; }
+  goto('home');
+  var area = document.getElementById('ai-result-area');
+  var txt = document.getElementById('ai-result-text');
+  area.style.display = 'flex';
+  txt.innerHTML = '<strong>AI:</strong> ' + (S.lang==='ar'?'يبحث عن: ':'Searching for: ') + '"' + esc(q) + '"';
+  document.getElementById('home-grid').innerHTML =
+    '<div style="grid-column:1/-1;padding:56px;text-align:center;color:var(--c-muted);display:flex;align-items:center;justify-content:center;gap:12px">' +
+    '<span class="spinner"></span> ' + (S.lang==='ar'?'الذكاء الاصطناعي يحلل…':'AI is analysing…') + '</div>';
+  try {
+    var data = await api('/api/ai/search', { method:'POST', body: JSON.stringify({query:q}) });
+    var deals = data.deals || [];
+    txt.innerHTML = '<strong>' + deals.length + (S.lang==='ar'?' عروض':'  deals found') + ':</strong> ' + esc(data.summary||'');
+    renderGrid('home-grid', deals, true);
+  } catch(e) {
+    document.getElementById('home-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">◌</div><p>' + esc(e.message) + '</p></div>';
+  }
+}
+
+// ─── DEALS PAGE ───────────────────────────────────
+function filterDeals(cat) {
+  S.dealscat = cat;
+  document.querySelectorAll('.filter-row .filter-btn').forEach(function(b) {
+    b.classList.toggle('on', b.dataset.cat === cat);
+  });
+  fetchDeals();
+}
+
+async function fetchDeals() {
+  var g = document.getElementById('deals-grid');
+  if (!g) return;
+  g.innerHTML = skels(12);
+  var q = (document.getElementById('deals-search')||{}).value||'';
+  var url = '/api/deals?limit=60&sort=-aiScore';
+  if (S.dealscat) url += '&category=' + encodeURIComponent(S.dealscat);
+  if (q.trim()) url += '&search=' + encodeURIComponent(q.trim());
+  try {
+    var data = await api(url);
+    renderGrid('deals-grid', data.deals||[]);
+  } catch(e) {
+    g.innerHTML = '<div class="empty-state"><div class="empty-state-icon">◌</div><div class="empty-state-title">' + esc(e.message) + '</div></div>';
+  }
+}
+
+// ─── STORES PAGE ──────────────────────────────────
+async function fetchAllStores() {
+  var g = document.getElementById('all-stores-grid');
+  if (!g) return;
+  g.innerHTML = skels(12);
+  try {
+    var data = await api('/api/stores');
+    var html = '';
+    var stores = data.stores || [];
+    for (var i=0; i<stores.length; i++) {
+      var s = stores[i];
+      html += '<div class="store-tile" onclick="goto(\'deals\')">' +
+        '<div class="store-tile-icon">' + esc(s.icon||'🏪') + '</div>' +
+        '<div class="store-tile-name">' + esc(s.name) + '</div>' +
+        '<div class="store-tile-cat">' + esc(s.category||'') + '</div>' +
+        '<div class="store-tile-deals">' + (s.dealCount||0) + (S.lang==='ar'?' عروض':' deals') + '</div>' +
+      '</div>';
+    }
+    g.innerHTML = html || '<div class="empty-state"><div class="empty-state-icon">◌</div><p>' + (S.lang==='ar'?'لا توجد متاجر':'No stores found') + '</p></div>';
+  } catch(e) {
+    g.innerHTML = '<div class="empty-state"><div class="empty-state-icon">◌</div><p>' + esc(e.message) + '</p></div>';
+  }
+}
+
+// ─── DEAL DETAIL MODAL ────────────────────────────
+async function openDeal(id) {
+  var dm = document.getElementById('deal-modal');
+  dm.innerHTML = '<div style="padding:60px;text-align:center"><span class="spinner"></span></div>';
+  document.getElementById('deal-overlay').classList.add('on');
+  api('/api/track/click', {method:'POST', body:JSON.stringify({dealId:id,action:'click',source:S.page})}).catch(function(){});
+  try {
+    var data = await api('/api/deals/' + id);
+    var d = data.deal;
+    var sn = storeName(d);
+    var code = codeSafe(d.promoCode);
+    var expiry = d.expiresAt ? fmtExpiry(d.expiresAt) : '';
+    var clicks = (d.analytics&&d.analytics.clicks)||0;
+    var saves  = (d.analytics&&d.analytics.saves)||0;
+    var disc = d.discountDisplay || (d.discountValue ? d.discountValue + '% OFF' : 'Deal');
+    var bg = bgFor(0);
+    var insights = '';
+    if (d.aiSummary) insights += '<div class="ai-insight-row">' + esc(d.aiSummary) + '</div>';
+    insights += '<div class="ai-insight-row">AI Score: ' + (d.aiScore||'—') + '/100</div>';
+    insights += '<div class="ai-insight-row">' + saves + ' ' + (S.lang==='ar'?'مستخدم حفظ هذا العرض':'users have saved this deal') + '</div>';
+    insights += '<div class="ai-insight-row">' + clicks + ' ' + (S.lang==='ar'?'نقرة':'clicks') + '</div>';
+    if (d.aiTags && d.aiTags.length) {
+      for (var i=0; i<d.aiTags.length; i++) insights += '<div class="ai-insight-row">' + esc(d.aiTags[i]) + '</div>';
+    }
+    dm.innerHTML =
+      '<button class="deal-modal-close" onclick="document.getElementById(\'deal-overlay\').classList.remove(\'on\')">✕</button>' +
+      '<div class="deal-modal-header">' +
+        '<div class="deal-modal-icon-wrap ' + bg + '">' + esc(d.icon||'🏷️') + '</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div class="deal-modal-title">' + esc(d.title) + '</div>' +
+          '<div class="deal-modal-meta">' +
+            '<span>' + esc(sn) + '</span>' +
+            '<span>' + esc(d.category) + '</span>' +
+            '<span>' + esc(disc) + '</span>' +
+            (expiry ? '<span>Exp. ' + expiry + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="deal-modal-body">' +
+        '<p class="deal-modal-desc">' + esc(d.description) + '</p>' +
+        '<div class="deal-modal-code-wrap">' +
+          '<div>' +
+            '<div class="deal-modal-code-lbl">' + (S.lang==='ar'?'رمز الخصم':'Promo Code') + '</div>' +
+            '<div class="deal-modal-code-val">' + esc(d.promoCode||'—') + '</div>' +
+          '</div>' +
+          '<button class="deal-modal-copy" id="dm-copy" onclick="dmCopy(\'' + code + '\',\'' + d._id + '\')">' + (S.lang==='ar'?'نسخ الرمز':'Copy code') + '</button>' +
+        '</div>' +
+        '<a href="' + S.api + '/api/track/redirect/' + d._id + '?source=modal" target="_blank" rel="noopener" class="deal-modal-visit">' + (S.lang==='ar'?'زيارة ':'Visit ') + esc(sn) + '</a>' +
+        '<div class="ai-insights-box">' +
+          '<div class="ai-insights-title">AI Insights</div>' +
+          insights +
+        '</div>' +
+      '</div>';
+  } catch(e) {
+    dm.innerHTML = '<button class="deal-modal-close" onclick="document.getElementById(\'deal-overlay\').classList.remove(\'on\')">✕</button>' +
+      '<div style="padding:40px;text-align:center;color:var(--c-muted)">' + esc(e.message) + '</div>';
+  }
+}
+
+function dmCopy(code, id) {
+  navigator.clipboard.writeText(code).catch(function(){});
+  var b = document.getElementById('dm-copy');
+  if (b) { b.textContent = S.lang==='ar'?'تم النسخ':'Copied!'; b.classList.add('copied'); }
+  api('/api/track/click',{method:'POST',body:JSON.stringify({dealId:id,action:'copy_code',source:'modal'})}).catch(function(){});
+  toast(S.lang==='ar'?'تم نسخ الرمز: '+code:'Code copied: ' + code);
+}
+
+function copyCode(code, id) {
+  navigator.clipboard.writeText(code).catch(function(){});
+  var b = document.getElementById('cpb-' + id);
+  if (b) {
+    b.textContent = S.lang==='ar'?'تم':'Done';
+    b.classList.add('copied');
+    setTimeout(function(){ if(b){ b.textContent=S.lang==='ar'?'نسخ':'Copy'; b.classList.remove('copied'); } },2000);
+  }
+  api('/api/track/click',{method:'POST',body:JSON.stringify({dealId:id,action:'copy_code',source:S.page})}).catch(function(){});
+  toast(S.lang==='ar'?'تم نسخ الرمز: '+code:'Copied: ' + code);
+}
+
+// ─── SAVE ─────────────────────────────────────────
+async function doSave(id) {
+  if (!S.user) { openAuth('login'); return; }
+  try {
+    var data = await api('/api/deals/'+id+'/save', {method:'POST', body:JSON.stringify({source:S.page})});
+    if (data.saved) {
+      if (!S.user.savedDeals) S.user.savedDeals = [];
+      S.user.savedDeals.push({_id:id});
+      toast(S.lang==='ar'?'تم حفظ العرض':'Deal saved');
+    } else {
+      S.user.savedDeals = (S.user.savedDeals||[]).filter(function(s){ return (s._id||s) !== id; });
+      toast(S.lang==='ar'?'تمت الإزالة':'Removed from saved');
+    }
+    if (S.page === 'home')    fetchHomeDeals(S.homecat);
+    if (S.page === 'deals')   fetchDeals();
+    if (S.page === 'profile') loadProfile();
+  } catch(e) { toast(e.message); }
+}
+
+// ─── PROFILE ──────────────────────────────────────
+async function loadProfile() {
+  if (!S.user) { openAuth('login'); return; }
+  document.getElementById('profile-name').textContent = S.user.name || 'My Account';
+  document.getElementById('profile-email').textContent = S.user.email || '';
+  document.getElementById('profile-av').textContent = (S.user.name||'?')[0].toUpperCase();
+  document.getElementById('profile-saved-count').textContent = (S.user.savedDeals||[]).length;
+  var g = document.getElementById('saved-grid');
+  g.innerHTML = skels(4);
+  try {
+    var data = await api('/api/users/me/saved');
+    renderGrid('saved-grid', data.savedDeals||[]);
+  } catch(e) {
+    g.innerHTML = '<div class="empty-state"><div class="empty-state-icon">◌</div><p>' + esc(e.message) + '</p></div>';
+  }
+}
+
+function doLogout() {
+  S.token = ''; S.user = null;
+  localStorage.removeItem('dealna_token');
+  updateNavAuth();
+  goto('home');
+  toast(S.lang==='ar'?'تم تسجيل الخروج':'Signed out');
+}
+
+// ─── AUTH ─────────────────────────────────────────
+function openAuth(mode) {
+  var m = document.getElementById('auth-modal');
+  if (mode === 'login') {
+    m.innerHTML =
+      '<button class="modal-close" onclick="document.getElementById(\'auth-overlay\').classList.remove(\'on\')">✕</button>' +
+      '<h3>' + (S.lang==='ar'?'مرحباً بعودتك':'Welcome back') + '</h3>' +
+      '<p class="modal-sub">' + (S.lang==='ar'?'سجّل دخولك للحفظ والحصول على توصيات مخصصة.':'Sign in to save deals and get AI-personalised recommendations.') + '</p>' +
+      '<div class="form-group"><label class="form-label">' + (S.lang==='ar'?'البريد الإلكتروني':'Email') + '</label><input class="form-input" type="email" id="l-email" placeholder="you@example.com" autocomplete="email"/></div>' +
+      '<div class="form-group"><label class="form-label">' + (S.lang==='ar'?'كلمة المرور':'Password') + '</label><input class="form-input" type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"/></div>' +
+      '<button class="form-submit" id="l-btn" onclick="doLogin()">' + (S.lang==='ar'?'تسجيل الدخول':'Sign in') + '</button>' +
+      '<div class="divider"><span>' + (S.lang==='ar'?'أو':'or') + '</span></div>' +
+      '<div class="demo-link" onclick="demoLogin()">' + (S.lang==='ar'?'تجربة: ahmed@demo.ma / Demo@1234!':'Try demo: ahmed@demo.ma / Demo@1234!') + '</div>' +
+      '<p class="auth-alt">' + (S.lang==='ar'?'ليس لديك حساب؟ ':'No account? ') + '<a onclick="openAuth(\'signup\')">' + (S.lang==='ar'?'سجّل مجاناً':'Sign up free') + '</a></p>';
+  } else {
+    m.innerHTML =
+      '<button class="modal-close" onclick="document.getElementById(\'auth-overlay\').classList.remove(\'on\')">✕</button>' +
+      '<h3>' + (S.lang==='ar'?'انضم إلى ديلنا':'Join Dealna') + '</h3>' +
+      '<p class="modal-sub">' + (S.lang==='ar'?'احصل على توصيات ذكية مخصصة لاهتماماتك.':'Get AI deal recommendations personalised to your interests.') + '</p>' +
+      '<div class="form-row">' +
+        '<div class="form-group"><label class="form-label">' + (S.lang==='ar'?'الاسم':'Name') + '</label><input class="form-input" id="r-name" placeholder="Ahmed" autocomplete="name"/></div>' +
+        '<div class="form-group"><label class="form-label">' + (S.lang==='ar'?'المدينة':'City') + '</label><input class="form-input" id="r-city" placeholder="Casablanca"/></div>' +
+      '</div>' +
+      '<div class="form-group"><label class="form-label">' + (S.lang==='ar'?'البريد الإلكتروني':'Email') + '</label><input class="form-input" type="email" id="r-email" placeholder="you@example.ma" autocomplete="email"/></div>' +
+      '<div class="form-group"><label class="form-label">' + (S.lang==='ar'?'كلمة المرور':'Password') + '</label><input class="form-input" type="password" id="r-pass" placeholder="Min 8 characters" autocomplete="new-password"/></div>' +
+      '<label class="form-label" style="margin-bottom:8px">' + (S.lang==='ar'?'الاهتمامات':'Interests') + '</label>' +
+      '<div class="interests-grid">' +
+        '<button class="interest-btn" onclick="this.classList.toggle(\'on\')" data-p="Food">' + (S.lang==='ar'?'طعام':'Food') + '</button>' +
+        '<button class="interest-btn" onclick="this.classList.toggle(\'on\')" data-p="Fashion">' + (S.lang==='ar'?'أزياء':'Fashion') + '</button>' +
+        '<button class="interest-btn" onclick="this.classList.toggle(\'on\')" data-p="Electronics">' + (S.lang==='ar'?'إلكترونيات':'Electronics') + '</button>' +
+        '<button class="interest-btn" onclick="this.classList.toggle(\'on\')" data-p="Beauty">' + (S.lang==='ar'?'جمال':'Beauty') + '</button>' +
+        '<button class="interest-btn" onclick="this.classList.toggle(\'on\')" data-p="Travel">' + (S.lang==='ar'?'سفر':'Travel') + '</button>' +
+        '<button class="interest-btn" onclick="this.classList.toggle(\'on\')" data-p="Local">' + (S.lang==='ar'?'محلي':'Local') + '</button>' +
+      '</div>' +
+      '<button class="form-submit" id="r-btn" onclick="doSignup()">' + (S.lang==='ar'?'إنشاء حساب':'Create account') + '</button>' +
+      '<p class="auth-alt">' + (S.lang==='ar'?'لديك حساب؟ ':'Have an account? ') + '<a onclick="openAuth(\'login\')">' + (S.lang==='ar'?'سجّل دخولك':'Sign in') + '</a></p>';
+  }
+  document.getElementById('auth-overlay').classList.add('on');
+}
+
+async function doLogin() {
+  var email = (document.getElementById('l-email')||{}).value||'';
+  var pass  = (document.getElementById('l-pass')||{}).value||'';
+  if (!email||!pass) { toast(S.lang==='ar'?'أدخل جميع الحقول':'Fill in all fields'); return; }
+  var btn = document.getElementById('l-btn');
+  btn.disabled = true;
+  btn.textContent = S.lang==='ar'?'جاري تسجيل الدخول…':'Signing in…';
+  try {
+    var data = await api('/api/auth/login',{method:'POST',body:JSON.stringify({email,password:pass})});
+    S.token = data.token;
+    localStorage.setItem('dealna_token', S.token);
+    S.user = data.user;
+    document.getElementById('auth-overlay').classList.remove('on');
+    updateNavAuth();
+    toast(S.lang==='ar'?'مرحباً بك، '+S.user.name:'Welcome back, ' + S.user.name);
+  } catch(e) {
+    toast(e.message);
+    btn.disabled = false;
+    btn.textContent = S.lang==='ar'?'تسجيل الدخول':'Sign in';
+  }
+}
+
+function demoLogin() {
+  document.getElementById('l-email').value = 'ahmed@demo.ma';
+  document.getElementById('l-pass').value = 'Demo@1234!';
+  doLogin();
+}
+
+async function doSignup() {
+  var name  = ((document.getElementById('r-name')||{}).value||'').trim();
+  var city  = ((document.getElementById('r-city')||{}).value||'').trim();
+  var email = ((document.getElementById('r-email')||{}).value||'').trim();
+  var pass  = (document.getElementById('r-pass')||{}).value||'';
+  if (!name||!email||!pass) { toast(S.lang==='ar'?'أدخل جميع الحقول':'Fill in all fields'); return; }
+  var cats = [];
+  document.querySelectorAll('.interest-btn.on').forEach(function(b){ cats.push(b.dataset.p); });
+  var btn = document.getElementById('r-btn');
+  btn.disabled = true;
+  btn.textContent = S.lang==='ar'?'جاري الإنشاء…':'Creating account…';
+  try {
+    var data = await api('/api/auth/register',{method:'POST',body:JSON.stringify({name,email,password:pass,city,preferences:{categories:cats}})});
+    S.token = data.token;
+    localStorage.setItem('dealna_token', S.token);
+    S.user = data.user;
+    document.getElementById('auth-overlay').classList.remove('on');
+    updateNavAuth();
+    toast(S.lang==='ar'?'أهلاً بك، '+S.user.name:'Welcome, ' + S.user.name);
+  } catch(e) {
+    toast(e.message);
+    btn.disabled = false;
+    btn.textContent = S.lang==='ar'?'إنشاء حساب':'Create account';
+  }
+}
+
+function updateNavAuth() {
+  var nr = document.getElementById('btn-signin').parentNode;
+  if (S.user) {
+    document.getElementById('btn-signin').style.display = 'none';
+    document.getElementById('btn-getstarted').style.display = 'none';
+    // Add avatar button if not exists
+    if (!document.getElementById('nav-user-av')) {
+      var av = document.createElement('button');
+      av.className = 'nav-avatar';
+      av.id = 'nav-user-av';
+      av.textContent = (S.user.name||'?')[0].toUpperCase();
+      av.onclick = function(){ goto('profile'); };
+      nr.appendChild(av);
+    }
+  } else {
+    document.getElementById('btn-signin').style.display = '';
+    document.getElementById('btn-getstarted').style.display = '';
+    var old = document.getElementById('nav-user-av');
+    if (old) old.remove();
+  }
+}
+
+async function restoreSession() {
+  if (!S.token) return;
+  try {
+    var data = await api('/api/auth/me');
+    S.user = data.user;
+    updateNavAuth();
+  } catch(e) {
+    S.token = '';
+    localStorage.removeItem('dealna_token');
+  }
+}
+
+// ─── OVERLAYS ─────────────────────────────────────
+function closeOverlay(e, id) {
+  if (e.target === document.getElementById(id)) {
+    document.getElementById(id).classList.remove('on');
+  }
+}
+
+// ─── CHAT ─────────────────────────────────────────
+function toggleChat() {
+  S.chatOpen = !S.chatOpen;
+  var w = document.getElementById('chat-win');
+  if (S.chatOpen) {
+    w.classList.add('on');
+    if (document.getElementById('chat-msgs').children.length === 0) {
+      appendMsg('bot', S.lang==='ar'?'مرحباً! أنا ديلنا AI. اسألني عن أي عروض في المغرب.':'Hello! I\'m Dealna AI. Ask me about any deals in Morocco.');
+    }
+  } else {
+    w.classList.remove('on');
+  }
+}
+
+function appendMsg(role, text) {
+  var c = document.getElementById('chat-msgs');
+  var el = document.createElement('div');
+  el.className = 'chat-msg ' + role;
+  var t = new Date().toLocaleTimeString('en', {hour:'2-digit', minute:'2-digit'});
+  var html = (role === 'bot' ? '<div class="chat-msg-avt">✦</div>' : '') +
+    '<div><div class="chat-bubble">' + text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>') + '</div>' +
+    '<div class="chat-time">' + t + '</div></div>';
+  el.innerHTML = html;
+  c.appendChild(el);
+  c.scrollTop = c.scrollHeight;
+}
+
+function showTypingIndicator() {
+  var c = document.getElementById('chat-msgs');
+  var el = document.createElement('div');
+  el.className = 'chat-msg bot'; el.id = 'chat-typing';
+  el.innerHTML = '<div class="chat-msg-avt">✦</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+  c.appendChild(el);
+  c.scrollTop = c.scrollHeight;
+}
+function removeTyping() { var el = document.getElementById('chat-typing'); if (el) el.remove(); }
+
+function sendQuick(el) {
+  document.getElementById('chat-input').value = el.textContent;
+  sendChat();
+}
+
+async function sendChat() {
+  var inp = document.getElementById('chat-input');
+  var q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  document.getElementById('chat-qr').style.display = 'none';
+  appendMsg('user', q);
+  S.chatHistory.push({role:'user', content:q});
+  showTypingIndicator();
+  try {
+    var hist = S.chatHistory.slice(-6);
+    var data = await api('/api/ai/chat', {method:'POST', body:JSON.stringify({message:q, history:hist})});
+    removeTyping();
+    appendMsg('bot', data.reply||'…');
+    S.chatHistory.push({role:'assistant', content:data.reply});
+  } catch(e) {
+    removeTyping();
+    appendMsg('bot', S.lang==='ar'?'عذراً، لا يمكن الاتصال بالخادم الآن.':'Sorry, cannot connect to the server right now.');
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────
+async function init() {
+  ping();
+  await restoreSession();
+  loadHome();
+}
+
+init();
+</script>
+</body>
+</html>
