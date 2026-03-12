@@ -2236,7 +2236,7 @@ body.ar footer::before { right: auto; left: 5%; content: 'ديلنا'; }
 
 // ─── STATE ────────────────────────────────────────
 var S = {
-  api: 'https://dealna-backend.vercel.app',
+  api: 'https://dealna-backend.vercel.app', // hardcoded
   token: localStorage.getItem('dealna_token') || '',
   lang: localStorage.getItem('dealna_lang') || 'en',
   page: 'home',
@@ -2337,7 +2337,7 @@ function closeBanner() { document.getElementById('setup-banner').style.display =
 
 // Prefill
 document.getElementById('setup-input').value = S.api;
-if (S.api) document.getElementById('setup-banner').style.display = 'none';
+document.getElementById('setup-banner').style.display = 'none'; // always hidden — API hardcoded
 
 // ─── LANGUAGE ─────────────────────────────────────
 function toggleLang() {
