@@ -750,32 +750,47 @@ nav {
 .deal-visual-bg-2 { background: linear-gradient(135deg, #F0FDF4 0%, #C6F3DD 100%); }
 .deal-visual-bg-3 { background: linear-gradient(135deg, #FDF2FF 0%, #EDD5FF 100%); }
 .deal-visual-bg-4 { background: linear-gradient(135deg, #FFF1F1 0%, #FECDCD 100%); }
-.deal-visual-icon {
-  font-size: 2rem;
-  font-weight: 800;
-  font-family: var(--ff-mono);
-  letter-spacing: -2px;
-  opacity: .18;
-  transition: transform .3s var(--ease-spring), opacity .3s;
-  user-select: none;
-  text-align: center;
-  line-height: 1;
-}
-.deal-card:hover .deal-visual-icon { transform: scale(1.08); opacity: .28; }
 
-/* Discount % badge in center of visual */
-.deal-visual-discount {
-  position: absolute;
+/* Store initial letter */
+.deal-visual-letter {
   font-family: var(--ff-display);
-  font-size: 2.6rem;
+  font-size: 5rem;
   font-weight: 800;
-  letter-spacing: -2px;
   line-height: 1;
-  opacity: .22;
+  letter-spacing: -4px;
+  opacity: .15;
   pointer-events: none;
   transition: transform .3s var(--ease-spring), opacity .3s;
+  user-select: none;
+  color: var(--c-ink);
 }
-.deal-card:hover .deal-visual-discount { transform: scale(1.06); opacity: .32; }
+.deal-card:hover .deal-visual-letter {
+  transform: scale(1.08) translateY(-4px);
+  opacity: .22;
+}
+
+/* Category-colored letter tint */
+.deal-card[data-cat="Food"]        .deal-visual-letter { color: var(--c-cat-food); }
+.deal-card[data-cat="Fashion"]     .deal-visual-letter { color: var(--c-cat-fashion); }
+.deal-card[data-cat="Electronics"] .deal-visual-letter { color: var(--c-cat-electronics); }
+.deal-card[data-cat="Beauty"]      .deal-visual-letter { color: var(--c-cat-beauty); }
+.deal-card[data-cat="Travel"]      .deal-visual-letter { color: var(--c-cat-travel); }
+.deal-card[data-cat="Local"]       .deal-visual-letter { color: var(--c-cat-local); }
+
+/* Small store badge bottom-right of visual */
+.deal-visual-store {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  font-size: .65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--c-muted2);
+  font-family: var(--ff-mono);
+  opacity: .7;
+}
+body.ar .deal-visual-store { right: auto; left: 12px; }
 
 .deal-top-badge {
   position: absolute;
@@ -2547,7 +2562,8 @@ function dealCard(d, idx, aiMode) {
 
   return '<div class="deal-card" data-cat="' + esc(d.category) + '" onclick="openDeal(\'' + d._id + '\')">' +
     '<div class="deal-visual ' + bg + '">' +
-      '<div class="deal-visual-discount">' + esc(disc) + '</div>' +
+      '<div class="deal-visual-letter">' + esc((sn||'D')[0].toUpperCase()) + '</div>' +
+      '<div class="deal-visual-store">' + esc(sn) + '</div>' +
       '<div class="deal-top-badge ' + badge.cls + '">' + badgeLabel + '</div>' +
       '<button class="deal-save-btn" onclick="event.stopPropagation();doSave(\'' + d._id + '\')" title="' + (S.lang==='ar'?'حفظ':'Save') + '">' + (saved ? '♥' : '♡') + '</button>' +
     '</div>' +
