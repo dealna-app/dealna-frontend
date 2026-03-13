@@ -12,14 +12,19 @@
    DESIGN TOKENS
 ═══════════════════════════════════════════ */
 :root {
-  --c-ink:       #0A0D14;
-  --c-ink2:      #161A27;
-  --c-ink3:      #1F2535;
-  --c-paper:     #F8F6F1;
+  --c-ink:       #0D0F18;
+  --c-ink2:      #161B2E;
+  --c-ink3:      #1E2540;
+  --c-paper:     #F7F5F0;
   --c-white:     #FFFFFF;
   --c-accent:    #1449E8;
   --c-accent-lt: #E8EEFF;
   --c-accent-glow: rgba(20,73,232,.18);
+  /* Moroccan warm accents */
+  --c-saffron:   #E8912A;
+  --c-saffron-lt:#FEF3E2;
+  --c-saffron-glow: rgba(232,145,42,.2);
+  --c-terracotta:#C85A38;
   --c-green:     #00A870;
   --c-green-lt:  #E6FBF3;
   --c-red:       #E03030;
@@ -28,8 +33,17 @@
   --c-amber-lt:  #FEF3C7;
   --c-muted:     #6B7491;
   --c-muted2:    #9BA3BC;
-  --c-border:    #E4E7F2;
+  --c-border:    #E4E7F0;
   --c-border2:   #CDD2E8;
+
+  /* Category colors */
+  --c-cat-food:        #E8912A;
+  --c-cat-fashion:     #9B59B6;
+  --c-cat-electronics: #1449E8;
+  --c-cat-beauty:      #E91E8C;
+  --c-cat-travel:      #00A870;
+  --c-cat-local:       #C85A38;
+  --c-cat-other:       #6B7491;
 
   --ff-display:  'Playfair Display', Georgia, serif;
   --ff-body:     'DM Sans', sans-serif;
@@ -43,8 +57,9 @@
 
   --sh-sm: 0 2px 8px rgba(10,13,20,.07);
   --sh-md: 0 8px 32px rgba(10,13,20,.10);
-  --sh-lg: 0 20px 64px rgba(10,13,20,.14);
+  --sh-lg: 0 24px 72px rgba(10,13,20,.16);
   --sh-accent: 0 12px 40px rgba(20,73,232,.25);
+  --sh-warm: 0 12px 40px rgba(232,145,42,.22);
 
   --nav-h: 66px;
   --ease: cubic-bezier(.4,0,.2,1);
@@ -309,6 +324,18 @@ nav {
   padding: 100px 5% 80px;
 }
 
+/* Moroccan geometric pattern overlay */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='0.5'%3E%3Cpolygon points='30,2 58,16 58,44 30,58 2,44 2,16'/%3E%3Cpolygon points='30,10 50,20 50,40 30,50 10,40 10,20'/%3E%3Cline x1='30' y1='2' x2='30' y2='10'/%3E%3Cline x1='58' y1='16' x2='50' y2='20'/%3E%3Cline x1='58' y1='44' x2='50' y2='40'/%3E%3Cline x1='30' y1='58' x2='30' y2='50'/%3E%3Cline x1='2' y1='44' x2='10' y2='40'/%3E%3Cline x1='2' y1='16' x2='10' y2='20'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 80% at 60% 50%, transparent 20%, black 100%);
+  opacity: 0.6;
+}
+
 /* Decorative background geometry */
 .hero-bg {
   position: absolute;
@@ -322,19 +349,19 @@ nav {
 }
 .hero-bg-circle:nth-child(1) {
   width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(20,73,232,.28) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(20,73,232,.32) 0%, transparent 70%);
   top: -200px; right: -150px;
   animation: drift1 12s ease-in-out infinite alternate;
 }
 .hero-bg-circle:nth-child(2) {
   width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(0,168,112,.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(232,145,42,.18) 0%, transparent 70%);
   bottom: -100px; left: 10%;
   animation: drift2 15s ease-in-out infinite alternate;
 }
 .hero-bg-circle:nth-child(3) {
   width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(217,119,6,.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(200,90,56,.12) 0%, transparent 70%);
   top: 30%; left: 40%;
   animation: drift1 18s ease-in-out infinite alternate-reverse;
 }
@@ -403,7 +430,7 @@ nav {
 .hero-headline em {
   font-style: italic;
   color: transparent;
-  background: linear-gradient(135deg, #6D9AFF 0%, #A5C8FF 50%, #7BFFD4 100%);
+  background: linear-gradient(135deg, #F5B842 0%, #E8912A 45%, #FF6B6B 100%);
   -webkit-background-clip: text;
   background-clip: text;
 }
@@ -444,7 +471,7 @@ nav {
 }
 .hero-search-form input::placeholder { color: rgba(255,255,255,.28); }
 .hero-search-btn {
-  background: var(--c-accent);
+  background: linear-gradient(135deg, var(--c-saffron), var(--c-terracotta));
   color: #fff;
   border: none;
   border-radius: var(--r-md);
@@ -456,8 +483,9 @@ nav {
   flex-shrink: 0;
   transition: all .2s;
   letter-spacing: .3px;
+  box-shadow: 0 4px 16px rgba(232,145,42,.3);
 }
-.hero-search-btn:hover { background: #1a58ff; }
+.hero-search-btn:hover { opacity: .9; transform: translateY(-1px); box-shadow: var(--sh-warm); }
 
 .hero-tags {
   display: flex;
@@ -651,20 +679,27 @@ nav {
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
-  transition: all .18s;
+  transition: all .18s var(--ease);
   color: var(--c-muted);
   flex-shrink: 0;
 }
-.cat-pill:hover { border-color: var(--c-ink); color: var(--c-ink); }
+.cat-pill:hover { border-color: var(--c-ink); color: var(--c-ink); transform: translateY(-1px); }
 .cat-pill.on {
   background: var(--c-ink);
   border-color: var(--c-ink);
   color: #fff;
+  box-shadow: 0 4px 14px rgba(10,13,20,.15);
 }
+.cat-pill[data-cat="Food"].on         { background: var(--c-cat-food); border-color: var(--c-cat-food); box-shadow: var(--sh-warm); }
+.cat-pill[data-cat="Fashion"].on      { background: var(--c-cat-fashion); border-color: var(--c-cat-fashion); }
+.cat-pill[data-cat="Electronics"].on  { background: var(--c-accent); border-color: var(--c-accent); box-shadow: var(--sh-accent); }
+.cat-pill[data-cat="Beauty"].on       { background: var(--c-cat-beauty); border-color: var(--c-cat-beauty); }
+.cat-pill[data-cat="Travel"].on       { background: var(--c-cat-travel); border-color: var(--c-cat-travel); }
+.cat-pill[data-cat="Local"].on        { background: var(--c-cat-local); border-color: var(--c-cat-local); }
 .cat-pill-icon { font-size: 1rem; }
 
 /* ═══════════════════════════════════════════
-   DEAL CARDS — v3
+   DEAL CARDS — v4
 ═══════════════════════════════════════════ */
 .deals-grid {
   display: grid;
@@ -678,21 +713,32 @@ nav {
   border-radius: var(--r-lg);
   overflow: hidden;
   cursor: pointer;
-  transition: all .25s var(--ease);
+  transition: all .28s var(--ease);
   display: flex;
   flex-direction: column;
   position: relative;
+  /* Category accent left border — set dynamically via JS */
+  border-left: 4px solid var(--c-border2);
 }
 .deal-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
   box-shadow: var(--sh-lg);
   border-color: transparent;
+  border-left-color: transparent;
 }
 .deal-card:hover .deal-cta-bar { opacity: 1; transform: translateY(0); }
 
+/* Category border colors */
+.deal-card[data-cat="Food"]        { border-left-color: var(--c-cat-food); }
+.deal-card[data-cat="Fashion"]     { border-left-color: var(--c-cat-fashion); }
+.deal-card[data-cat="Electronics"] { border-left-color: var(--c-cat-electronics); }
+.deal-card[data-cat="Beauty"]      { border-left-color: var(--c-cat-beauty); }
+.deal-card[data-cat="Travel"]      { border-left-color: var(--c-cat-travel); }
+.deal-card[data-cat="Local"]       { border-left-color: var(--c-cat-local); }
+
 /* Card top image area */
 .deal-visual {
-  height: 160px;
+  height: 148px;
   position: relative;
   display: flex;
   align-items: center;
@@ -704,8 +750,32 @@ nav {
 .deal-visual-bg-2 { background: linear-gradient(135deg, #F0FDF4 0%, #C6F3DD 100%); }
 .deal-visual-bg-3 { background: linear-gradient(135deg, #FDF2FF 0%, #EDD5FF 100%); }
 .deal-visual-bg-4 { background: linear-gradient(135deg, #FFF1F1 0%, #FECDCD 100%); }
-.deal-visual-icon { font-size: 3.6rem; transition: transform .3s var(--ease-spring); }
-.deal-card:hover .deal-visual-icon { transform: scale(1.12) rotate(-3deg); }
+.deal-visual-icon {
+  font-size: 2rem;
+  font-weight: 800;
+  font-family: var(--ff-mono);
+  letter-spacing: -2px;
+  opacity: .18;
+  transition: transform .3s var(--ease-spring), opacity .3s;
+  user-select: none;
+  text-align: center;
+  line-height: 1;
+}
+.deal-card:hover .deal-visual-icon { transform: scale(1.08); opacity: .28; }
+
+/* Discount % badge in center of visual */
+.deal-visual-discount {
+  position: absolute;
+  font-family: var(--ff-display);
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1;
+  opacity: .22;
+  pointer-events: none;
+  transition: transform .3s var(--ease-spring), opacity .3s;
+}
+.deal-card:hover .deal-visual-discount { transform: scale(1.06); opacity: .32; }
 
 .deal-top-badge {
   position: absolute;
@@ -720,10 +790,10 @@ nav {
   backdrop-filter: blur(8px);
 }
 body.ar .deal-top-badge { left: auto; right: 12px; }
-.badge-hot { background: rgba(224,48,48,.1); color: var(--c-red); border: 1px solid rgba(224,48,48,.2); }
-.badge-new { background: rgba(20,73,232,.1); color: var(--c-accent); border: 1px solid rgba(20,73,232,.2); }
-.badge-verified { background: rgba(0,168,112,.1); color: var(--c-green); border: 1px solid rgba(0,168,112,.2); }
-.badge-exclusive { background: rgba(217,119,6,.1); color: var(--c-amber); border: 1px solid rgba(217,119,6,.2); }
+.badge-hot { background: rgba(224,48,48,.12); color: var(--c-red); border: 1px solid rgba(224,48,48,.22); }
+.badge-new { background: rgba(20,73,232,.12); color: var(--c-accent); border: 1px solid rgba(20,73,232,.22); }
+.badge-verified { background: rgba(0,168,112,.12); color: var(--c-green); border: 1px solid rgba(0,168,112,.22); }
+.badge-exclusive { background: rgba(232,145,42,.12); color: var(--c-saffron); border: 1px solid rgba(232,145,42,.22); }
 
 .deal-save-btn {
   position: absolute;
@@ -731,7 +801,7 @@ body.ar .deal-top-badge { left: auto; right: 12px; }
   right: 10px;
   width: 32px;
   height: 32px;
-  background: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.88);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(0,0,0,.07);
   border-radius: 50%;
@@ -744,11 +814,11 @@ body.ar .deal-top-badge { left: auto; right: 12px; }
   z-index: 2;
 }
 body.ar .deal-save-btn { right: auto; left: 10px; }
-.deal-save-btn:hover { transform: scale(1.15); background: #fff; }
+.deal-save-btn:hover { transform: scale(1.18); background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.1); }
 
 /* Card body */
 .deal-body {
-  padding: 18px 18px 14px;
+  padding: 16px 18px 12px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -758,15 +828,26 @@ body.ar .deal-save-btn { right: auto; left: 10px; }
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 7px;
 }
 .deal-category-tag {
   font-size: .67rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .6px;
-  color: var(--c-muted2);
+  letter-spacing: .8px;
+  padding: 2px 8px;
+  border-radius: 50px;
+  background: var(--c-paper);
+  color: var(--c-muted);
 }
+/* Category tag colors */
+[data-cat="Food"] .deal-category-tag        { background: #FEF3E2; color: var(--c-cat-food); }
+[data-cat="Fashion"] .deal-category-tag     { background: #F5EFF9; color: var(--c-cat-fashion); }
+[data-cat="Electronics"] .deal-category-tag { background: var(--c-accent-lt); color: var(--c-accent); }
+[data-cat="Beauty"] .deal-category-tag      { background: #FDE8F3; color: var(--c-cat-beauty); }
+[data-cat="Travel"] .deal-category-tag      { background: var(--c-green-lt); color: var(--c-cat-travel); }
+[data-cat="Local"] .deal-category-tag       { background: #FDF0EC; color: var(--c-cat-local); }
+
 .deal-category-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--c-border2); }
 .deal-store-tag { font-size: .67rem; color: var(--c-muted2); }
 
@@ -776,7 +857,7 @@ body.ar .deal-save-btn { right: auto; left: 10px; }
   font-weight: 700;
   line-height: 1.3;
   color: var(--c-ink);
-  margin-bottom: 7px;
+  margin-bottom: 6px;
   letter-spacing: -.2px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -793,7 +874,7 @@ body.ar .deal-title { font-family: var(--ff-ar); }
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 /* Promo code section */
@@ -801,8 +882,8 @@ body.ar .deal-title { font-family: var(--ff-ar); }
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--c-paper);
-  border: 1.5px dashed var(--c-border2);
+  background: linear-gradient(135deg, #FEF9F0, #FEF3E2);
+  border: 1.5px dashed rgba(232,145,42,.35);
   border-radius: var(--r-sm);
   padding: 9px 12px;
   margin-bottom: 12px;
@@ -811,23 +892,23 @@ body.ar .deal-title { font-family: var(--ff-ar); }
   font-size: .63rem;
   text-transform: uppercase;
   letter-spacing: .8px;
-  color: var(--c-muted2);
-  font-weight: 600;
+  color: var(--c-saffron);
+  font-weight: 700;
   white-space: nowrap;
 }
 .deal-promo-code {
   font-family: var(--ff-mono);
   font-size: .82rem;
   font-weight: 500;
-  color: var(--c-accent);
-  letter-spacing: .8px;
+  color: var(--c-ink);
+  letter-spacing: 1px;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .deal-copy-btn {
-  background: var(--c-accent);
+  background: linear-gradient(135deg, var(--c-saffron), var(--c-terracotta));
   color: #fff;
   border: none;
   border-radius: var(--r-sm);
@@ -839,7 +920,7 @@ body.ar .deal-title { font-family: var(--ff-ar); }
   flex-shrink: 0;
   letter-spacing: .3px;
 }
-.deal-copy-btn:hover { background: #1a58ff; }
+.deal-copy-btn:hover { opacity: .88; transform: translateY(-1px); }
 .deal-copy-btn.copied { background: var(--c-green); }
 
 /* Card footer */
@@ -852,9 +933,12 @@ body.ar .deal-title { font-family: var(--ff-ar); }
 }
 .deal-discount {
   font-family: var(--ff-display);
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  color: var(--c-red);
+  background: linear-gradient(135deg, #E03030, #E8912A);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   letter-spacing: -1px;
   line-height: 1;
 }
@@ -883,11 +967,11 @@ body.ar .deal-title { font-family: var(--ff-ar); }
   margin-bottom: 5px;
 }
 .ai-score-lbl { font-size: .67rem; color: var(--c-muted2); text-transform: uppercase; letter-spacing: .6px; }
-.ai-score-val { font-size: .67rem; font-weight: 700; font-family: var(--ff-mono); color: var(--c-accent); }
+.ai-score-val { font-size: .67rem; font-weight: 700; font-family: var(--ff-mono); color: var(--c-saffron); }
 .ai-score-track { height: 3px; background: var(--c-border); border-radius: 3px; }
 .ai-score-fill {
   height: 3px;
-  background: linear-gradient(90deg, var(--c-accent), var(--c-green));
+  background: linear-gradient(90deg, var(--c-accent), var(--c-saffron));
   border-radius: 3px;
   transition: width .8s var(--ease);
 }
@@ -898,7 +982,7 @@ body.ar .deal-title { font-family: var(--ff-ar); }
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--c-ink);
+  background: linear-gradient(135deg, var(--c-ink), var(--c-ink2));
   color: #fff;
   text-align: center;
   padding: 12px;
@@ -908,7 +992,12 @@ body.ar .deal-title { font-family: var(--ff-ar); }
   transform: translateY(100%);
   transition: all .22s var(--ease);
   letter-spacing: .3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
+.deal-cta-bar::after { content: '→'; }
 
 /* ═══════════════════════════════════════════
    FEATURED STRIP — HORIZONTAL SCROLL
@@ -941,9 +1030,9 @@ body.ar .deal-title { font-family: var(--ff-ar); }
   filter: blur(60px);
 }
 .featured-item-bg-0 { background: radial-gradient(circle at 70% 30%, #1449E8, transparent 60%); }
-.featured-item-bg-1 { background: radial-gradient(circle at 70% 30%, #00A870, transparent 60%); }
-.featured-item-bg-2 { background: radial-gradient(circle at 70% 30%, #D97706, transparent 60%); }
-.featured-item-bg-3 { background: radial-gradient(circle at 70% 30%, #E03030, transparent 60%); }
+.featured-item-bg-1 { background: radial-gradient(circle at 70% 30%, #E8912A, transparent 60%); }
+.featured-item-bg-2 { background: radial-gradient(circle at 70% 30%, #00A870, transparent 60%); }
+.featured-item-bg-3 { background: radial-gradient(circle at 70% 30%, #C85A38, transparent 60%); }
 .featured-item-inner { position: relative; z-index: 1; padding: 22px; }
 .featured-item-cat { font-size: .67rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.35); font-weight: 600; margin-bottom: 10px; }
 .featured-item-title { font-family: var(--ff-display); font-size: 1rem; font-weight: 700; color: #fff; line-height: 1.25; margin-bottom: 8px; }
@@ -967,14 +1056,47 @@ body.ar .featured-item-title { font-family: var(--ff-ar); }
   padding: 22px 16px;
   text-align: center;
   cursor: pointer;
-  transition: all .22s var(--ease);
+  transition: all .25s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.store-tile::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--c-accent), var(--c-saffron));
+  transform: scaleX(0);
+  transition: transform .25s var(--ease);
+  transform-origin: left;
 }
 .store-tile:hover {
-  border-color: var(--c-accent);
+  border-color: transparent;
   transform: translateY(-4px);
-  box-shadow: 0 12px 36px var(--c-accent-glow);
+  box-shadow: var(--sh-md);
 }
+.store-tile:hover::before { transform: scaleX(1); }
 .store-tile-icon { font-size: 2.2rem; margin-bottom: 10px; }
+.store-tile-initial {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--c-ink2), var(--c-ink3));
+  color: #fff;
+  font-family: var(--ff-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  letter-spacing: -1px;
+  transition: transform .25s var(--ease);
+}
+.store-tile:hover .store-tile-initial {
+  background: linear-gradient(135deg, var(--c-accent), var(--c-saffron));
+  transform: scale(1.06);
+}
 .store-tile-name {
   font-family: var(--ff-display);
   font-size: .9rem;
@@ -984,7 +1106,26 @@ body.ar .featured-item-title { font-family: var(--ff-ar); }
 }
 body.ar .store-tile-name { font-family: var(--ff-ar); }
 .store-tile-cat { font-size: .7rem; color: var(--c-muted); }
-.store-tile-deals { font-size: .7rem; color: var(--c-accent); margin-top: 5px; font-weight: 600; }
+.store-tile-deals { font-size: .7rem; color: var(--c-saffron); margin-top: 5px; font-weight: 600; }
+
+/* ═══════════════════════════════════════════
+   MOROCCAN ACCENT DIVIDER
+═══════════════════════════════════════════ */
+.moroccan-divider {
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--c-accent) 0%,
+    var(--c-saffron) 33%,
+    var(--c-terracotta) 66%,
+    var(--c-accent) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerBar 4s linear infinite;
+}
+@keyframes shimmerBar {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
 /* ═══════════════════════════════════════════
    MARQUEE / TICKER
@@ -1047,12 +1188,18 @@ body.ar .store-tile-name { font-family: var(--ff-ar); }
   font-size: .78rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all .18s;
+  transition: all .18s var(--ease);
   color: var(--c-muted);
   white-space: nowrap;
 }
 .filter-btn:hover { border-color: var(--c-ink); color: var(--c-ink); }
 .filter-btn.on { background: var(--c-ink); border-color: var(--c-ink); color: #fff; }
+.filter-btn[data-cat="Food"].on         { background: var(--c-cat-food); border-color: var(--c-cat-food); }
+.filter-btn[data-cat="Fashion"].on      { background: var(--c-cat-fashion); border-color: var(--c-cat-fashion); }
+.filter-btn[data-cat="Electronics"].on  { background: var(--c-accent); border-color: var(--c-accent); }
+.filter-btn[data-cat="Beauty"].on       { background: var(--c-cat-beauty); border-color: var(--c-cat-beauty); }
+.filter-btn[data-cat="Travel"].on       { background: var(--c-cat-travel); border-color: var(--c-cat-travel); }
+.filter-btn[data-cat="Local"].on        { background: var(--c-cat-local); border-color: var(--c-cat-local); }
 .filter-search {
   margin-left: auto;
   position: relative;
@@ -1101,7 +1248,7 @@ body.ar .store-tile-name { font-family: var(--ff-ar); }
   z-index: 2;
 }
 .about-inner h2 { font-size: clamp(2rem, 4vw, 3.2rem); color: #fff; letter-spacing: -2px; margin-bottom: 16px; }
-.about-inner h2 span { color: transparent; background: linear-gradient(90deg, #6D9AFF, #7BFFD4); -webkit-background-clip: text; background-clip: text; }
+.about-inner h2 span { color: transparent; background: linear-gradient(90deg, #F5B842, #E8912A); -webkit-background-clip: text; background-clip: text; }
 .about-inner p { color: rgba(255,255,255,.45); font-size: .97rem; line-height: 1.8; margin-bottom: 28px; font-weight: 300; }
 
 .features-grid {
@@ -1898,6 +2045,9 @@ body.ar footer::before { right: auto; left: 5%; content: 'ديلنا'; }
     </div>
   </section>
 
+  <!-- Moroccan accent divider -->
+  <div class="moroccan-divider"></div>
+
   <!-- Ticker -->
   <div class="ticker-wrap">
     <div class="ticker-inner" id="ticker-inner">
@@ -1948,34 +2098,14 @@ body.ar footer::before { right: auto; left: 5%; content: 'ديلنا'; }
 
       <!-- Category pills -->
       <div class="cat-strip" id="home-cats">
-        <button class="cat-pill on" data-cat="" onclick="filterHome('')">
-          <span data-en="All" data-ar="الكل">All</span>
-        </button>
-        <button class="cat-pill" data-cat="Food" onclick="filterHome('Food')">
-          <span class="cat-pill-icon">🍔</span>
-          <span data-en="Food" data-ar="طعام">Food</span>
-        </button>
-        <button class="cat-pill" data-cat="Fashion" onclick="filterHome('Fashion')">
-          <span class="cat-pill-icon">👗</span>
-          <span data-en="Fashion" data-ar="أزياء">Fashion</span>
-        </button>
-        <button class="cat-pill" data-cat="Electronics" onclick="filterHome('Electronics')">
-          <span class="cat-pill-icon">📱</span>
-          <span data-en="Electronics" data-ar="إلكترونيات">Electronics</span>
-        </button>
-        <button class="cat-pill" data-cat="Beauty" onclick="filterHome('Beauty')">
-          <span class="cat-pill-icon">💄</span>
-          <span data-en="Beauty" data-ar="جمال">Beauty</span>
-        </button>
-        <button class="cat-pill" data-cat="Travel" onclick="filterHome('Travel')">
-          <span class="cat-pill-icon">✈️</span>
-          <span data-en="Travel" data-ar="سفر">Travel</span>
-        </button>
-        <button class="cat-pill" data-cat="Local" onclick="filterHome('Local')">
-          <span class="cat-pill-icon">🌿</span>
-          <span data-en="Local" data-ar="محلي">Local</span>
-        </button>
-      </div>
+          <button class="cat-pill on" data-cat="" onclick="filterHome('')" data-en="All" data-ar="الكل">All</button>
+          <button class="cat-pill" data-cat="Food" onclick="filterHome('Food')" data-en="Food" data-ar="طعام">Food</button>
+          <button class="cat-pill" data-cat="Fashion" onclick="filterHome('Fashion')" data-en="Fashion" data-ar="أزياء">Fashion</button>
+          <button class="cat-pill" data-cat="Electronics" onclick="filterHome('Electronics')" data-en="Electronics" data-ar="إلكترونيات">Electronics</button>
+          <button class="cat-pill" data-cat="Beauty" onclick="filterHome('Beauty')" data-en="Beauty" data-ar="جمال">Beauty</button>
+          <button class="cat-pill" data-cat="Travel" onclick="filterHome('Travel')" data-en="Travel" data-ar="سفر">Travel</button>
+          <button class="cat-pill" data-cat="Local" onclick="filterHome('Local')" data-en="Local" data-ar="محلي">Local</button>
+        </div>
 
       <div id="ai-result-area" style="display:none" class="ai-result-banner">
         <span style="font-size:1.2rem;flex-shrink:0">✦</span>
@@ -2236,7 +2366,7 @@ body.ar footer::before { right: auto; left: 5%; content: 'ديلنا'; }
 
 // ─── STATE ────────────────────────────────────────
 var S = {
-  api: 'https://dealna-backend.vercel.app', // hardcoded
+  api: 'https://dealna-backend.vercel.app',
   token: localStorage.getItem('dealna_token') || '',
   lang: localStorage.getItem('dealna_lang') || 'en',
   page: 'home',
@@ -2337,7 +2467,7 @@ function closeBanner() { document.getElementById('setup-banner').style.display =
 
 // Prefill
 document.getElementById('setup-input').value = S.api;
-document.getElementById('setup-banner').style.display = 'none'; // always hidden — API hardcoded
+if (S.api) document.getElementById('setup-banner').style.display = 'none';
 
 // ─── LANGUAGE ─────────────────────────────────────
 function toggleLang() {
@@ -2415,9 +2545,9 @@ function dealCard(d, idx, aiMode) {
   }
   var ctaText = S.lang === 'ar' ? 'عرض التفاصيل' : 'View deal details';
 
-  return '<div class="deal-card" onclick="openDeal(\'' + d._id + '\')">' +
+  return '<div class="deal-card" data-cat="' + esc(d.category) + '" onclick="openDeal(\'' + d._id + '\')">' +
     '<div class="deal-visual ' + bg + '">' +
-      '<span class="deal-visual-icon">' + esc(d.icon||'🏷️') + '</span>' +
+      '<div class="deal-visual-discount">' + esc(disc) + '</div>' +
       '<div class="deal-top-badge ' + badge.cls + '">' + badgeLabel + '</div>' +
       '<button class="deal-save-btn" onclick="event.stopPropagation();doSave(\'' + d._id + '\')" title="' + (S.lang==='ar'?'حفظ':'Save') + '">' + (saved ? '♥' : '♡') + '</button>' +
     '</div>' +
@@ -2556,8 +2686,9 @@ async function fetchHomeStores() {
     var html = '';
     for (var i=0; i<stores.length; i++) {
       var s = stores[i];
+      var initial = (s.name||'?')[0].toUpperCase();
       html += '<div class="store-tile" onclick="goto(\'deals\')">' +
-        '<div class="store-tile-icon">' + esc(s.icon||'🏪') + '</div>' +
+        '<div class="store-tile-initial">' + esc(initial) + '</div>' +
         '<div class="store-tile-name">' + esc(s.name) + '</div>' +
         '<div class="store-tile-cat">' + esc(s.category||'') + '</div>' +
         '<div class="store-tile-deals">' + (s.dealCount||0) + (S.lang==='ar'?' عروض':' deals') + '</div>' +
@@ -2626,8 +2757,9 @@ async function fetchAllStores() {
     var stores = data.stores || [];
     for (var i=0; i<stores.length; i++) {
       var s = stores[i];
+      var initial = (s.name||'?')[0].toUpperCase();
       html += '<div class="store-tile" onclick="goto(\'deals\')">' +
-        '<div class="store-tile-icon">' + esc(s.icon||'🏪') + '</div>' +
+        '<div class="store-tile-initial">' + esc(initial) + '</div>' +
         '<div class="store-tile-name">' + esc(s.name) + '</div>' +
         '<div class="store-tile-cat">' + esc(s.category||'') + '</div>' +
         '<div class="store-tile-deals">' + (s.dealCount||0) + (S.lang==='ar'?' عروض':' deals') + '</div>' +
