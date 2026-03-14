@@ -5341,9 +5341,11 @@ function closeModal() {
 async function trackClick(dealId) {
   if (!dealId) return;
   try {
-    await fetch(`${API_BASE}/tracking/click`, {
+    const headers = { 'Content-Type': 'application/json' };
+    if (auth && auth.token) headers['Authorization'] = 'Bearer ' + auth.token;
+    await fetch(API_BASE + '/tracking/click', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ dealId }),
     });
   } catch (e) { /* silent */ }
@@ -5891,6 +5893,40 @@ initExtended(
 });
 
 
+
+/* ============================================================
+   SAVE DEAL TO ACCOUNT
+   ============================================================ */
+async function saveDeal(dealId, btn) {
+  if (!auth.user) { openAuthModal('login'); return; }
+  try {
+    var isSaved = auth.user.savedDeals && auth.user.savedDeals.some(function(s) { return (s._id || s) === dealId; });
+    var method = isSaved ? 'DELETE' : 'POST';
+    var url = isSaved ? (API_BASE + '/users/me/saved/' + dealId) : (API_BASE + '/users/me/saved');
+    var fetchOpts = {
+      method: method,
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + auth.token }
+    };
+    if (method === 'POST') fetchOpts.body = JSON.stringify({ dealId: dealId });
+    var res = await fetch(url, fetchOpts);
+    if (res.ok) {
+      if (!auth.user.savedDeals) auth.user.savedDeals = [];
+      if (isSaved) {
+        auth.user.savedDeals = auth.user.savedDeals.filter(function(s) { return (s._id || s) !== dealId; });
+        if (btn) { btn.classList.remove('saved'); btn.setAttribute('aria-label', 'Save deal'); }
+        showToast('Removed from saved deals', 'info');
+      } else {
+        auth.user.savedDeals.push({ _id: dealId });
+        if (btn) { btn.classList.add('saved'); btn.setAttribute('aria-label', 'Unsave deal'); }
+        showToast('Deal saved to your account', 'success');
+      }
+      auth.updateUI();
+    }
+  } catch(e) {
+    showToast('Could not save deal. Please try again.', 'error');
+  }
+}
+
 /* ============================================================
    AUTH STATE
    ============================================================ */
@@ -5902,6 +5938,7 @@ const auth = {
     if (!this.token) return;
     try {
       const res = await fetch(API_BASE + '/auth/me', {
+        method: 'GET',
         headers: { 'Authorization': 'Bearer ' + this.token, 'Content-Type': 'application/json' }
       });
       if (!res.ok) { this.logout(false); return; }
