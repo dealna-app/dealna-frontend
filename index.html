@@ -3386,6 +3386,387 @@ ul, ol { list-style: none; }
 ::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #CCC; }
 
+
+/* ============================================================
+   AUTH MODAL
+   ============================================================ */
+#auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(13,13,13,0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 240ms cubic-bezier(0.4,0,0.2,1);
+}
+#auth-modal-overlay.visible {
+  display: flex;
+  opacity: 1;
+}
+#auth-modal {
+  background: var(--white);
+  width: 100%;
+  max-width: 440px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  transform: scale(0.96) translateY(16px);
+  transition: transform 240ms cubic-bezier(0.4,0,0.2,1);
+}
+#auth-modal-overlay.visible #auth-modal {
+  transform: scale(1) translateY(0);
+}
+.auth-modal-header {
+  padding: 24px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.auth-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--rule);
+  margin: 20px 28px 0;
+}
+.auth-tab {
+  flex: 1;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 0;
+  color: #AAA;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 240ms;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  cursor: pointer;
+}
+.auth-tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+.auth-form {
+  padding: 24px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.auth-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #555;
+}
+.auth-input {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: var(--white);
+  outline: none;
+  transition: border-color 240ms;
+  font-family: var(--font-body);
+}
+.auth-input:focus { border-color: var(--ink); }
+.auth-input.error { border-color: var(--accent); }
+.auth-error {
+  font-size: 0.75rem;
+  color: var(--accent);
+  display: none;
+}
+.auth-error.visible { display: block; }
+.btn-auth-submit {
+  width: 100%;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--ink);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: background 240ms, transform 240ms;
+  margin-top: 4px;
+}
+.btn-auth-submit:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+}
+.btn-auth-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.auth-divider {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #BBB;
+  position: relative;
+  margin: 4px 0;
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 20px);
+  height: 1px;
+  background: var(--rule);
+}
+.auth-divider::before { left: 0; }
+.auth-divider::after  { right: 0; }
+.auth-cats-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #555;
+  margin-bottom: 2px;
+}
+.auth-cats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.auth-cat-btn {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 7px 8px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: #666;
+  cursor: pointer;
+  transition: all 240ms;
+  text-align: center;
+}
+.auth-cat-btn.selected {
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
+}
+
+/* ============================================================
+   USER ACCOUNT DROPDOWN
+   ============================================================ */
+.nav-user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background 240ms;
+  position: relative;
+}
+.nav-user-avatar:hover { background: var(--accent); }
+
+#user-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 220px;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 500;
+  animation: dropdown-open 0.18s ease-out;
+}
+#user-dropdown.open { display: flex; }
+
+@keyframes dropdown-open {
+  from { opacity:0; transform:translateY(-6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.dropdown-user-info {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--parchment);
+}
+.dropdown-user-name {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+.dropdown-user-email {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: #AAA;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+}
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  transition: background 240ms;
+  border-bottom: 1px solid var(--rule);
+}
+.dropdown-item:last-child { border-bottom: none; }
+.dropdown-item:hover { background: var(--parchment); }
+.dropdown-item.danger { color: var(--accent); }
+.dropdown-item svg { color: #AAA; flex-shrink: 0; }
+.dropdown-item.danger svg { color: var(--accent); }
+
+/* ============================================================
+   ACCOUNT PAGE
+   ============================================================ */
+#page-account {
+  display: none;
+  padding: 48px 0 80px;
+  min-height: 60vh;
+}
+#page-account.active { display: block; }
+.account-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+.account-sidebar {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: sticky;
+  top: 140px;
+}
+.account-profile-card {
+  background: var(--ink);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.account-avatar-large {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.account-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.account-email {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.08em;
+}
+.account-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  border: none;
+  background: var(--white);
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+  transition: background 240ms, color 240ms;
+}
+.account-nav-item:last-child { border-bottom: none; }
+.account-nav-item:hover { background: var(--parchment); color: var(--ink); }
+.account-nav-item.active { background: var(--parchment); color: var(--ink); font-weight: 600; }
+.account-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.account-section {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.account-section-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--parchment);
+}
+.account-section-title {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+.account-section-body {
+  padding: 24px;
+}
+.account-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.875rem;
+}
+.account-stat-row:last-child { border-bottom: none; }
+.account-stat-label { color: #666; }
+.account-stat-value { font-weight: 600; color: var(--ink); }
+
+@media (max-width: 768px) {
+  .account-layout { grid-template-columns: 1fr; }
+  .account-sidebar { position: static; }
+}
+
 </style>
 </head>
 <body>
@@ -3424,7 +3805,13 @@ ul, ol { list-style: none; }
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
         </button>
-        <button class="btn-nav-cta" data-page="deals">Browse Deals</button>
+        <div id="nav-guest" style="display:flex;gap:8px;align-items:center">
+          <button class="btn-ghost" id="nav-login-btn" style="font-size:0.8125rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;padding:4px 0;color:#333">Sign In</button>
+          <button class="btn-nav-cta" id="nav-register-btn">Get Started</button>
+        </div>
+        <div id="nav-user" style="display:none;align-items:center;gap:8px">
+          <button class="nav-user-avatar" id="nav-avatar-btn" aria-label="My account"><span id="nav-avatar-initial">?</span></button>
+        </div>
         <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -3961,7 +4348,7 @@ ul, ol { list-style: none; }
         <div>
           <h3 class="footer-col-title">Company</h3>
           <button class="footer-link" data-page="about">About</button>
-          <a href="mailto:contact@dealna.ma" class="footer-link">Contact</a>
+          <a href="/cdn-cgi/l/email-protection#41222e2f35202235012524202d2f206f2c20" class="footer-link">Contact</a>
         </div>
       </nav>
     </div>
@@ -3974,6 +4361,138 @@ ul, ol { list-style: none; }
     </div>
   </div>
 </footer>
+
+
+<!-- ============================================================
+     AUTH MODAL
+     ============================================================ -->
+<div id="auth-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+  <div id="auth-modal">
+    <div class="auth-modal-header">
+      <h2 class="auth-modal-title" id="auth-modal-title">Welcome to Dealna</h2>
+      <button class="modal-close" id="auth-modal-close" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login">Sign In</button>
+      <button class="auth-tab" id="tab-register">Create Account</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form class="auth-form" id="login-form" novalidate>
+      <div class="auth-field">
+        <label class="auth-label" for="login-email">Email Address</label>
+        <input class="auth-input" type="email" id="login-email" placeholder="your@email.com" autocomplete="email" required>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="login-password">Password</label>
+        <input class="auth-input" type="password" id="login-password" placeholder="Your password" autocomplete="current-password" required>
+      </div>
+      <p class="auth-error" id="login-error"></p>
+      <button type="submit" class="btn-auth-submit" id="login-submit">Sign In</button>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form class="auth-form" id="register-form" novalidate style="display:none">
+      <div class="auth-field">
+        <label class="auth-label" for="reg-name">Full Name</label>
+        <input class="auth-input" type="text" id="reg-name" placeholder="Your name" autocomplete="name" required>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="reg-email">Email Address</label>
+        <input class="auth-input" type="email" id="reg-email" placeholder="your@email.com" autocomplete="email" required>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="reg-city">City (optional)</label>
+        <input class="auth-input" type="text" id="reg-city" placeholder="Casablanca, Rabat, Marrakech..." autocomplete="address-level2">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="reg-password">Password</label>
+        <input class="auth-input" type="password" id="reg-password" placeholder="Min. 6 characters" autocomplete="new-password" required>
+      </div>
+      <div>
+        <div class="auth-cats-label">Interests (optional)</div>
+        <div class="auth-cats-grid" id="reg-cats">
+          <button type="button" class="auth-cat-btn" data-cat="food">Food</button>
+          <button type="button" class="auth-cat-btn" data-cat="fashion">Fashion</button>
+          <button type="button" class="auth-cat-btn" data-cat="electronics">Electronics</button>
+          <button type="button" class="auth-cat-btn" data-cat="beauty">Beauty</button>
+          <button type="button" class="auth-cat-btn" data-cat="travel">Travel</button>
+          <button type="button" class="auth-cat-btn" data-cat="local">Local</button>
+        </div>
+      </div>
+      <p class="auth-error" id="register-error"></p>
+      <button type="submit" class="btn-auth-submit" id="register-submit">Create Account</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============================================================
+     USER DROPDOWN MENU
+     ============================================================ -->
+<div id="user-dropdown" role="menu" aria-label="Account menu">
+  <div class="dropdown-user-info">
+    <div class="dropdown-user-name" id="dropdown-name">—</div>
+    <div class="dropdown-user-email" id="dropdown-email">—</div>
+  </div>
+  <button class="dropdown-item" id="dropdown-account" role="menuitem">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    My Account
+  </button>
+  <button class="dropdown-item" id="dropdown-saved" role="menuitem">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    Saved Deals
+    <span id="dropdown-saved-count" style="margin-left:auto;font-family:var(--font-mono);font-size:0.625rem;color:var(--accent)"></span>
+  </button>
+  <button class="dropdown-item danger" id="dropdown-logout" role="menuitem">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Sign Out
+  </button>
+</div>
+
+<!-- ============================================================
+     ACCOUNT PAGE
+     ============================================================ -->
+<div id="page-account" role="main" aria-label="My account">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">
+        <div class="section-label-line" aria-hidden="true"></div>
+        <div>
+          <h1 class="section-title">My Account</h1>
+          <p class="section-subtitle" id="account-subtitle">Manage your profile and saved deals</p>
+        </div>
+      </div>
+    </div>
+    <div class="account-layout">
+      <aside class="account-sidebar">
+        <div class="account-profile-card">
+          <div class="account-avatar-large" id="account-avatar">?</div>
+          <div class="account-name" id="account-name">—</div>
+          <div class="account-email" id="account-email-display">—</div>
+        </div>
+        <button class="account-nav-item active" data-section="overview">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Overview
+        </button>
+        <button class="account-nav-item" data-section="saved">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          Saved Deals
+        </button>
+        <button class="account-nav-item danger" id="account-logout-btn" style="color:var(--accent)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign Out
+        </button>
+      </aside>
+      <div class="account-content" id="account-content">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ============================================================
      AI ASSISTANT WIDGET
@@ -4086,7 +4605,7 @@ ul, ol { list-style: none; }
 <!-- ============================================================
      JAVASCRIPT
      ============================================================ -->
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ============================================================
    CONFIG
    ============================================================ */
@@ -5365,10 +5884,334 @@ async function initExtended() {
   }
 }
 
-initExtended().catch(err => {
+initExtended(
+).catch(err => {
   console.error('Init error:', err);
   showToast('Failed to load deals. Please refresh.', 'error');
 });
+
+
+/* ============================================================
+   AUTH STATE
+   ============================================================ */
+const auth = {
+  token: localStorage.getItem('dealna_token') || '',
+  user: null,
+
+  async init() {
+    if (!this.token) return;
+    try {
+      const res = await fetch(API_BASE + '/auth/me', {
+        headers: { 'Authorization': 'Bearer ' + this.token, 'Content-Type': 'application/json' }
+      });
+      if (!res.ok) { this.logout(false); return; }
+      const data = await res.json();
+      this.user = data.user || data;
+      this.updateUI();
+    } catch(e) { this.logout(false); }
+  },
+
+  async login(email, password) {
+    const res = await fetch(API_BASE + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || data.error || 'Login failed');
+    this.token = data.token;
+    this.user = data.user || data;
+    localStorage.setItem('dealna_token', this.token);
+    this.updateUI();
+    return data;
+  },
+
+  async register(payload) {
+    const res = await fetch(API_BASE + '/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || data.error || 'Registration failed');
+    this.token = data.token;
+    this.user = data.user || data;
+    localStorage.setItem('dealna_token', this.token);
+    this.updateUI();
+    return data;
+  },
+
+  logout(notify = true) {
+    this.token = '';
+    this.user = null;
+    localStorage.removeItem('dealna_token');
+    this.updateUI();
+    if (notify) showToast('You have been signed out', 'info');
+    if (state.currentPage === 'account') navigateTo('home');
+  },
+
+  updateUI() {
+    const guestEl = document.getElementById('nav-guest');
+    const userEl  = document.getElementById('nav-user');
+    const avatarInitial = document.getElementById('nav-avatar-initial');
+    if (!guestEl || !userEl) return;
+
+    if (this.user) {
+      guestEl.style.display = 'none';
+      userEl.style.display  = 'flex';
+      const initial = (this.user.name || this.user.email || 'U').charAt(0).toUpperCase();
+      if (avatarInitial) avatarInitial.textContent = initial;
+      const dname = document.getElementById('dropdown-name');
+      const demail = document.getElementById('dropdown-email');
+      if (dname) dname.textContent = this.user.name || 'User';
+      if (demail) demail.textContent = this.user.email || '';
+      const savedCount = document.getElementById('dropdown-saved-count');
+      if (savedCount) savedCount.textContent = (this.user.savedDeals || []).length || '';
+      const an = document.getElementById('account-name');
+      const ae = document.getElementById('account-email-display');
+      const av = document.getElementById('account-avatar');
+      if (an) an.textContent = this.user.name || 'User';
+      if (ae) ae.textContent = this.user.email || '';
+      if (av) av.textContent = initial;
+    } else {
+      guestEl.style.display = 'flex';
+      userEl.style.display  = 'none';
+    }
+  },
+};
+
+/* ============================================================
+   AUTH MODAL OPEN / CLOSE
+   ============================================================ */
+function openAuthModal(tab) {
+  tab = tab || 'login';
+  const overlay = document.getElementById('auth-modal-overlay');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => overlay.classList.add('visible'));
+  document.body.style.overflow = 'hidden';
+  switchAuthTab(tab);
+  setTimeout(function() {
+    var el = document.getElementById(tab === 'login' ? 'login-email' : 'reg-name');
+    if (el) el.focus();
+  }, 100);
+}
+
+function closeAuthModal() {
+  var overlay = document.getElementById('auth-modal-overlay');
+  overlay.classList.remove('visible');
+  setTimeout(function() { overlay.style.display = 'none'; }, 240);
+  document.body.style.overflow = '';
+  var le = document.getElementById('login-error');
+  var re = document.getElementById('register-error');
+  if (le) le.classList.remove('visible');
+  if (re) re.classList.remove('visible');
+}
+
+function switchAuthTab(tab) {
+  var lf = document.getElementById('login-form');
+  var rf = document.getElementById('register-form');
+  var tl = document.getElementById('tab-login');
+  var tr = document.getElementById('tab-register');
+  if (tab === 'login') {
+    lf.style.display = 'flex'; rf.style.display = 'none';
+    tl.classList.add('active'); tr.classList.remove('active');
+  } else {
+    lf.style.display = 'none'; rf.style.display = 'flex';
+    tl.classList.remove('active'); tr.classList.add('active');
+  }
+}
+
+document.getElementById('nav-login-btn').addEventListener('click', function() { openAuthModal('login'); });
+document.getElementById('nav-register-btn').addEventListener('click', function() { openAuthModal('register'); });
+document.getElementById('auth-modal-close').addEventListener('click', closeAuthModal);
+document.getElementById('auth-modal-overlay').addEventListener('click', function(e) {
+  if (e.target === document.getElementById('auth-modal-overlay')) closeAuthModal();
+});
+document.getElementById('tab-login').addEventListener('click', function() { switchAuthTab('login'); });
+document.getElementById('tab-register').addEventListener('click', function() { switchAuthTab('register'); });
+
+/* ============================================================
+   LOGIN SUBMIT
+   ============================================================ */
+document.getElementById('login-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var email    = document.getElementById('login-email').value.trim();
+  var password = document.getElementById('login-password').value;
+  var errEl    = document.getElementById('login-error');
+  var submitBtn = document.getElementById('login-submit');
+  errEl.classList.remove('visible');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Signing in...';
+  try {
+    await auth.login(email, password);
+    closeAuthModal();
+    showToast('Welcome back, ' + (auth.user.name || 'there'), 'success');
+  } catch(err) {
+    errEl.textContent = err.message;
+    errEl.classList.add('visible');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Sign In';
+  }
+});
+
+/* ============================================================
+   REGISTER SUBMIT
+   ============================================================ */
+var selectedCats = new Set();
+document.querySelectorAll('.auth-cat-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var cat = btn.dataset.cat;
+    if (selectedCats.has(cat)) { selectedCats.delete(cat); btn.classList.remove('selected'); }
+    else { selectedCats.add(cat); btn.classList.add('selected'); }
+  });
+});
+
+document.getElementById('register-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var name     = document.getElementById('reg-name').value.trim();
+  var email    = document.getElementById('reg-email').value.trim();
+  var city     = document.getElementById('reg-city').value.trim();
+  var password = document.getElementById('reg-password').value;
+  var errEl    = document.getElementById('register-error');
+  var submitBtn = document.getElementById('register-submit');
+  errEl.classList.remove('visible');
+  if (!name) { errEl.textContent = 'Please enter your name'; errEl.classList.add('visible'); return; }
+  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email'; errEl.classList.add('visible'); return; }
+  if (password.length < 6) { errEl.textContent = 'Password must be at least 6 characters'; errEl.classList.add('visible'); return; }
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Creating account...';
+  try {
+    await auth.register({ name, email, password, city: city || undefined, preferences: { categories: [...selectedCats] } });
+    closeAuthModal();
+    showToast('Account created. Welcome, ' + name + '!', 'success');
+  } catch(err) {
+    errEl.textContent = err.message;
+    errEl.classList.add('visible');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Create Account';
+  }
+});
+
+/* ============================================================
+   USER DROPDOWN
+   ============================================================ */
+var avatarBtn = document.getElementById('nav-avatar-btn');
+var userDropdown = document.getElementById('user-dropdown');
+
+avatarBtn.addEventListener('click', function(e) {
+  e.stopPropagation();
+  var isOpen = userDropdown.classList.toggle('open');
+  if (isOpen) {
+    var rect = avatarBtn.getBoundingClientRect();
+    userDropdown.style.position = 'fixed';
+    userDropdown.style.top = (rect.bottom + 8) + 'px';
+    userDropdown.style.right = (window.innerWidth - rect.right) + 'px';
+  }
+});
+
+document.addEventListener('click', function(e) {
+  if (!userDropdown.contains(e.target) && e.target !== avatarBtn) {
+    userDropdown.classList.remove('open');
+  }
+});
+
+document.getElementById('dropdown-account').addEventListener('click', function() {
+  userDropdown.classList.remove('open');
+  navigateTo('account');
+});
+
+document.getElementById('dropdown-saved').addEventListener('click', function() {
+  userDropdown.classList.remove('open');
+  navigateTo('account');
+  setTimeout(function() { renderAccountSection('saved'); }, 120);
+});
+
+document.getElementById('dropdown-logout').addEventListener('click', function() {
+  userDropdown.classList.remove('open');
+  auth.logout();
+});
+
+/* ============================================================
+   ACCOUNT PAGE
+   ============================================================ */
+function renderAccountPage() {
+  if (!auth.user) { openAuthModal('login'); return; }
+  auth.updateUI();
+  renderAccountSection('overview');
+}
+
+function renderAccountSection(section) {
+  var contentEl = document.getElementById('account-content');
+  document.querySelectorAll('.account-nav-item[data-section]').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.section === section);
+  });
+
+  if (section === 'overview') {
+    contentEl.innerHTML = '<div class="account-section"><div class="account-section-header"><div class="account-section-title">Account Overview</div></div><div class="account-section-body">'
+      + '<div class="account-stat-row"><span class="account-stat-label">Full Name</span><span class="account-stat-value">' + escHtml(auth.user.name || '—') + '</span></div>'
+      + '<div class="account-stat-row"><span class="account-stat-label">Email</span><span class="account-stat-value">' + escHtml(auth.user.email || '—') + '</span></div>'
+      + '<div class="account-stat-row"><span class="account-stat-label">City</span><span class="account-stat-value">' + escHtml(auth.user.city || 'Not set') + '</span></div>'
+      + '<div class="account-stat-row"><span class="account-stat-label">Member Since</span><span class="account-stat-value">' + (auth.user.createdAt ? new Date(auth.user.createdAt).toLocaleDateString('en-MA', { year:'numeric', month:'long' }) : '—') + '</span></div>'
+      + '<div class="account-stat-row"><span class="account-stat-label">Saved Deals</span><span class="account-stat-value">' + (auth.user.savedDeals || []).length + '</span></div>'
+      + '</div></div>';
+  } else if (section === 'saved') {
+    var savedIds = (auth.user.savedDeals || []).map(function(s) { return s._id || s; });
+    var savedDeals = state.allDeals.filter(function(d) { return savedIds.includes(d._id); });
+    if (savedDeals.length === 0) {
+      contentEl.innerHTML = '<div class="account-section"><div class="account-section-header"><div class="account-section-title">Saved Deals</div></div><div class="account-section-body"><div class="saved-empty-state"><div class="saved-empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><div class="saved-empty-title">No saved deals yet</div><p class="saved-empty-sub">Browse deals and save your favourites.</p><button class="btn-primary" data-page="deals" style="margin-top:8px">Browse Deals</button></div></div></div>';
+      contentEl.querySelectorAll('[data-page]').forEach(function(el) {
+        el.addEventListener('click', function() { navigateTo(el.dataset.page); });
+      });
+    } else {
+      contentEl.innerHTML = '';
+      var section_el = document.createElement('div');
+      section_el.className = 'account-section';
+      section_el.innerHTML = '<div class="account-section-header"><div class="account-section-title">Saved Deals (' + savedDeals.length + ')</div></div>';
+      var body = document.createElement('div');
+      body.style.cssText = 'display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule)';
+      savedDeals.forEach(function(deal) { body.appendChild(renderDealCard(deal)); });
+      section_el.appendChild(body);
+      contentEl.appendChild(section_el);
+    }
+  }
+}
+
+document.querySelectorAll('.account-nav-item[data-section]').forEach(function(btn) {
+  btn.addEventListener('click', function() { renderAccountSection(btn.dataset.section); });
+});
+
+document.getElementById('account-logout-btn').addEventListener('click', function() { auth.logout(); });
+
+/* ============================================================
+   PATCH navigateTo FOR ACCOUNT PAGE
+   ============================================================ */
+var _baseNavigateTo = navigateTo;
+navigateTo = function(page, filter) {
+  if (page === 'account') {
+    ['page-home','page-deals','page-stores','page-about'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.classList.remove('active'); el.style.display = 'none'; }
+    });
+    document.getElementById('page-home').classList.add('hidden');
+    document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(function(l) { l.classList.remove('active'); });
+    var accPage = document.getElementById('page-account');
+    accPage.classList.add('active');
+    accPage.style.display = 'block';
+    state.currentPage = 'account';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    closeMobileMenu();
+    renderAccountPage();
+    return;
+  }
+  _baseNavigateTo(page, filter);
+};
+
+/* ============================================================
+   INIT AUTH
+   ============================================================ */
+auth.init();
 
 </script>
 </body>
