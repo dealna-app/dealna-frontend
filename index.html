@@ -1267,6 +1267,14 @@ ul, ol { list-style: none; }
   overflow: hidden;
 }
 
+.personalized-section {
+  margin: 20px 0 28px;
+}
+
+.personalized-section .section-header {
+  margin-bottom: 18px;
+}
+
 /* Deals loading state */
 .deals-loading {
   grid-column: 1 / -1;
@@ -4455,6 +4463,24 @@ ul, ol { list-style: none; }
       </div>
     </div>
 
+    <section id="personalized-section" class="personalized-section" aria-labelledby="personalized-heading" style="display:none">
+      <div class="section-header">
+        <div class="section-label">
+          <div class="section-label-line" aria-hidden="true"></div>
+          <div>
+            <h2 class="section-title" id="personalized-heading">Recommended for you</h2>
+            <p class="section-subtitle" id="personalized-subtitle">Personalized picks based on your interests</p>
+          </div>
+        </div>
+      </div>
+      <div class="deals-grid" id="personalized-grid" role="list" aria-label="Recommended deals grid">
+        <div class="deals-loading">
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <p class="loading-text">Loading recommendations</p>
+        </div>
+      </div>
+    </section>
+
     <div class="deals-toolbar" role="toolbar" aria-label="Filter and sort deals">
       <button class="filter-tag active" data-filter="all">All</button>
       <button class="filter-tag" data-filter="food">Food</button>
@@ -4948,6 +4974,7 @@ const state = {
   currentPage:    'home',
   allDeals:       [],
   featuredDeals:  [],
+  recommendedDeals: [],
   stores:         [],
   activeCategory: 'all',
   activeFilter:   'all',
@@ -4973,6 +5000,12 @@ async function apiFetch(path, opts = {}) {
     console.warn('API error:', path, err.message);
     return null;
   }
+}
+
+async function apiFetchAuth(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (auth && auth.token) headers['Authorization'] = 'Bearer ' + auth.token;
+  return apiFetch(path, { ...opts, headers });
 }
 
 /* ============================================================
@@ -5345,6 +5378,55 @@ function renderDealsGrid(deals, append = false) {
   });
 
   observeFadeIns();
+}
+
+/* ============================================================
+   RENDER: PERSONALIZED DEALS
+   ============================================================ */
+function renderPersonalizedDeals(deals, message) {
+  const section = document.getElementById('personalized-section');
+  const grid = document.getElementById('personalized-grid');
+  const subtitle = document.getElementById('personalized-subtitle');
+
+  if (!section || !grid) return;
+
+  if (!deals || deals.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  if (subtitle && message) subtitle.textContent = message;
+
+  grid.innerHTML = '';
+  deals.slice(0, 8).forEach(deal => {
+    grid.appendChild(renderDealCard(deal));
+  });
+
+  observeFadeIns();
+}
+
+async function loadPersonalizedDeals() {
+  const section = document.getElementById('personalized-section');
+  if (!section) return;
+
+  if (!auth || !auth.token) {
+    section.style.display = 'none';
+    return;
+  }
+
+  const res = await apiFetchAuth('/ai/recommend', {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
+
+  if (!res || !res.deals) {
+    section.style.display = 'none';
+    return;
+  }
+
+  state.recommendedDeals = res.deals;
+  renderPersonalizedDeals(state.recommendedDeals, res.message || 'Recommended for you');
 }
 
 /* ============================================================
@@ -6146,6 +6228,7 @@ document.getElementById('compare-modal-close').addEventListener('click', () => {
    ============================================================ */
 const aiWidget = {
   open: false,
+  history: [],
   toggle() {
     this.open = !this.open;
     const panel = document.getElementById('ai-chat-panel');
@@ -6195,18 +6278,13 @@ Keep responses short (2-4 sentences max). Be direct and specific. Do not use emo
 Current relevant deals from our database:\n${dealsContext}`;
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const data = await apiFetchAuth('/ai/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 250,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: text }],
-        }),
+        body: JSON.stringify({ message: text }),
       });
-      const data = await res.json();
-      const reply = data.content?.[0]?.text || 'I could not find specific deals for that right now. Try browsing by category above.';
+      const reply = data && data.reply
+        ? data.reply
+        : 'I could not find specific deals for that right now. Try browsing by category above.';
 
       typing.remove();
       const aiMsg = document.createElement('div');
@@ -6497,6 +6575,7 @@ const auth = {
       guestEl.style.display = 'flex';
       userEl.style.display  = 'none';
     }
+    loadPersonalizedDeals();
   },
 };
 
