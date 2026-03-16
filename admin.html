@@ -140,6 +140,12 @@
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .form-group { margin-bottom: 16px; }
   .form-group.full { grid-column: 1 / -1; }
+  .image-help { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .image-preview {
+    margin-top: 10px; border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; background: var(--surface2);
+  }
+  .image-preview img { display: block; width: 100%; height: 200px; object-fit: cover; }
   label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
   input, select, textarea {
     width: 100%; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border);
@@ -392,6 +398,10 @@
       <div class="form-group full">
         <label>Image URL</label>
         <input type="text" id="f-image" placeholder="https://...">
+        <div class="image-help">Paste a direct image link (.jpg, .png). We will preview it here.</div>
+        <div class="image-preview" id="f-image-preview-wrap" style="display:none">
+          <img id="f-image-preview" alt="Deal image preview">
+        </div>
       </div>
       <div class="form-group">
         <label>Expires At</label>
@@ -656,6 +666,7 @@ function editDeal(id) {
   document.getElementById('f-tag').value = deal.tag || 'hot';
   document.getElementById('f-url').value = deal.affiliateUrl || '';
   document.getElementById('f-image').value = deal.imageUrl || '';
+  updateImagePreview(document.getElementById('f-image').value);
   document.getElementById('f-icon').value = deal.icon || '';
   document.getElementById('f-featured').value = deal.isFeatured ? 'true' : 'false';
   document.getElementById('f-score').value = deal.aiScore || '';
@@ -682,7 +693,25 @@ function clearForm() {
   ['f-title','f-desc','f-promo','f-display','f-value','f-original','f-url','f-image','f-icon','f-expires','f-score'].forEach(function(id) {
     document.getElementById(id).value = '';
   });
+  updateImagePreview('');
 }
+
+function updateImagePreview(url) {
+  var wrap = document.getElementById('f-image-preview-wrap');
+  var img = document.getElementById('f-image-preview');
+  if (!wrap || !img) return;
+  if (url && /^https?:\/\//i.test(url)) {
+    img.src = url;
+    wrap.style.display = 'block';
+  } else {
+    img.removeAttribute('src');
+    wrap.style.display = 'none';
+  }
+}
+
+document.getElementById('f-image').addEventListener('input', function(e) {
+  updateImagePreview(e.target.value);
+});
 
 function saveDeal() {
   var data = {
