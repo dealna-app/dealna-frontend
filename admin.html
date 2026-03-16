@@ -296,6 +296,7 @@
           <span>🔍</span>
           <input type="text" id="dealSearch" placeholder="Search deals..." oninput="filterDeals()">
         </div>
+        <button class="btn btn-ghost" id="autoFillImagesBtn" onclick="autoFillImages()">Auto-Fill Images</button>
         <button class="btn btn-primary" onclick="openDealModal()">+ Add Deal</button>
       </div>
     </div>
@@ -752,6 +753,27 @@ function saveDeal() {
       showToast(d.message || 'Error saving deal', 'error');
     }
   }).catch(function() { showToast('Network error', 'error'); });
+}
+
+function autoFillImages() {
+  if (!token) return showToast('Please sign in as admin', 'error');
+  var btn = document.getElementById('autoFillImagesBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Filling...'; }
+  fetch(API_URL + '/api/admin/deals/fill-images?limit=10', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token }
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d && d.success) {
+      showToast('Images updated: ' + d.updated + ' / ' + d.checked, 'success');
+      loadDeals();
+    } else {
+      showToast(d.error || 'Could not auto-fill images', 'error');
+    }
+  }).catch(function() {
+    showToast('Network error', 'error');
+  }).finally(function() {
+    if (btn) { btn.disabled = false; btn.textContent = 'Auto-Fill Images'; }
+  });
 }
 
 function askDelete(id) {
