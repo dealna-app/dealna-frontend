@@ -759,7 +759,7 @@ function autoFillImages() {
   if (!token) return showToast('Please sign in as admin', 'error');
   var btn = document.getElementById('autoFillImagesBtn');
   if (btn) { btn.disabled = true; btn.textContent = 'Filling...'; }
-  fetch(API_URL + '/api/admin/deals/fill-images?limit=10', {
+  fetch(API_URL + '/api/admin/deals/fill-images?limit=50', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token }
   }).then(function(r) { return r.json(); }).then(function(d) {
