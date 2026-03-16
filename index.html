@@ -1023,6 +1023,12 @@ ul, ol { list-style: none; }
   margin-bottom: 14px;
 }
 
+.deal-card-image.logo-image {
+  object-fit: contain;
+  padding: 14px;
+  background: var(--parchment);
+}
+
 .deal-card-bottom {
   padding: 16px 24px;
   border-top: 1px solid var(--rule);
@@ -1745,6 +1751,12 @@ ul, ol { list-style: none; }
   margin: 6px 0 16px;
 }
 
+.modal-deal-image.logo-image {
+  object-fit: contain;
+  padding: 18px;
+  background: var(--parchment);
+}
+
 .modal-discount-row {
   display: flex;
   align-items: baseline;
@@ -1985,6 +1997,12 @@ ul, ol { list-style: none; }
   border: 1px solid var(--rule);
   background: var(--rule-soft);
   margin: 6px 0 16px;
+}
+
+.deal-detail-image.logo-image {
+  object-fit: contain;
+  padding: 20px;
+  background: var(--parchment);
 }
 
 .deal-detail-back {
@@ -5015,6 +5033,8 @@ function normCat(str) {
 /* ============================================================
    DEAL IMAGE (with fallback)
    ============================================================ */
+const DEAL_PLACEHOLDER_IMG = 'assets/deal-placeholder.svg';
+
 function getStoreDomain(store) {
   if (!store || !store.website) return '';
   let raw = String(store.website).trim();
@@ -5028,22 +5048,55 @@ function getStoreDomain(store) {
   }
 }
 
-function getStoreLogoUrl(store) {
-  if (!store) return '';
-  if (store.logoUrl) return store.logoUrl;
-  const domain = getStoreDomain(store);
-  if (domain) return `https://logo.clearbit.com/${domain}`;
-  return '';
+function getImageCandidates(deal) {
+  const candidates = [];
+  const hasProduct = !!(deal.imageUrl || deal.image);
+  if (deal.imageUrl) candidates.push(deal.imageUrl);
+  if (deal.image) candidates.push(deal.image);
+
+  const storeObj = typeof deal.store === 'object' ? deal.store : null;
+  let hasStoreLogo = false;
+  if (storeObj) {
+    if (storeObj.logoUrl) {
+      candidates.push(storeObj.logoUrl);
+      hasStoreLogo = true;
+    }
+    const domain = getStoreDomain(storeObj);
+    if (domain) {
+      candidates.push(`https://logo.clearbit.com/${domain}`);
+      candidates.push(`https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=256`);
+      hasStoreLogo = true;
+    }
+  }
+
+  return { candidates: candidates.filter(Boolean), hasProduct, hasStoreLogo };
 }
 
-function getDealImageInfo(deal) {
-  const storeObj = typeof deal.store === 'object' ? deal.store : null;
-  const storeLogo = getStoreLogoUrl(storeObj);
-  const url = deal.imageUrl || deal.image || storeLogo || '';
-  if (url) {
-    return { url: url, isFallback: false, isStoreLogo: !deal.imageUrl && !deal.image && !!storeLogo };
+function setImageWithFallback(imgEl, urls, altText) {
+  if (!imgEl) return;
+  const list = Array.isArray(urls) ? urls.filter(Boolean) : [];
+  imgEl.dataset.fallbacks = JSON.stringify(list.slice(1));
+  imgEl.dataset.placeholder = DEAL_PLACEHOLDER_IMG;
+  imgEl.alt = altText || 'Deal image';
+  imgEl.onerror = function () {
+    const remaining = imgEl.dataset.fallbacks ? JSON.parse(imgEl.dataset.fallbacks) : [];
+    if (remaining.length) {
+      const next = remaining.shift();
+      imgEl.dataset.fallbacks = JSON.stringify(remaining);
+      imgEl.src = next;
+      return;
+    }
+    imgEl.onerror = null;
+    imgEl.src = DEAL_PLACEHOLDER_IMG;
+    imgEl.alt = 'Dealna deal placeholder';
+  };
+  if (list.length) {
+    imgEl.src = list[0];
+  } else {
+    imgEl.onerror = null;
+    imgEl.src = DEAL_PLACEHOLDER_IMG;
+    imgEl.alt = 'Dealna deal placeholder';
   }
-  return { url: 'assets/deal-placeholder.svg', isFallback: true };
 }
 
 /* ============================================================
@@ -5056,7 +5109,7 @@ function renderDealCard(deal, size = 'normal') {
   const soon = isExpiringSoon(deal.expiresAt);
   const storeName = typeof deal.store === 'object' ? deal.store.name : (deal.storeName || deal.store || 'Store');
   const initial = storeInitial(storeName);
-  const imageInfo = getDealImageInfo(deal);
+  const imageMeta = getImageCandidates(deal);
   const aiScore = deal.aiScore;
   const isAI = deal.isAIGenerated || deal.source === 'ai';
 
@@ -5070,7 +5123,7 @@ function renderDealCard(deal, size = 'normal') {
   card.innerHTML = `
     ${aiScore ? `<div class="ai-score-badge" aria-label="AI Score ${aiScore}">AI ${aiScore}</div>` : ''}
     <div class="deal-card-top">
-      <img class="deal-card-image" src="${escHtml(imageInfo.url)}" alt="${escHtml(imageInfo.isFallback ? 'Dealna deal placeholder' : (imageInfo.isStoreLogo ? storeName + ' logo' : (deal.title ? deal.title + ' image' : 'Deal image')))}" loading="lazy" onerror="this.onerror=null;this.src='assets/deal-placeholder.svg';">
+      <img class="deal-card-image" alt="" loading="lazy">
       <div class="deal-store-tag">
         <div class="deal-store-dot" aria-hidden="true"></div>
         <span class="deal-store-name">${escHtml(storeName)}</span>
@@ -5093,6 +5146,15 @@ function renderDealCard(deal, size = 'normal') {
       </div>
     </div>
   `;
+
+  const cardImg = card.querySelector('.deal-card-image');
+  if (cardImg) {
+    const altText = imageMeta.hasProduct
+      ? (deal.title ? `${deal.title} image` : 'Deal image')
+      : (imageMeta.hasStoreLogo ? `${storeName} logo` : 'Dealna deal placeholder');
+    setImageWithFallback(cardImg, imageMeta.candidates, altText);
+    cardImg.classList.toggle('logo-image', !imageMeta.hasProduct && imageMeta.hasStoreLogo);
+  }
 
   card.addEventListener('click', (e) => {
     if (e.target.closest('.deal-code-pill')) {
@@ -5614,7 +5676,7 @@ function openDealDetail(deal) {
   const disc = formatDiscount(deal);
   const cat = normCat(deal.category || (deal.store && deal.store.category) || '');
   const expiry = formatExpiry(deal.expiresAt);
-  const imageInfo = getDealImageInfo(deal);
+  const imageMeta = getImageCandidates(deal);
 
   document.getElementById('detail-store-name').textContent = storeName;
   document.getElementById('detail-title').textContent = deal.title || '—';
@@ -5624,13 +5686,11 @@ function openDealDetail(deal) {
   document.getElementById('detail-expiry').textContent = expiry;
   const detailImage = document.getElementById('detail-image');
   if (detailImage) {
-    detailImage.src = imageInfo.url;
-    detailImage.alt = imageInfo.isFallback ? 'Dealna deal placeholder' : (imageInfo.isStoreLogo ? `${storeName} logo` : (deal.title ? `${deal.title} image` : 'Deal image'));
-    detailImage.onerror = function() {
-      detailImage.onerror = null;
-      detailImage.src = 'assets/deal-placeholder.svg';
-      detailImage.alt = 'Dealna deal placeholder';
-    };
+    const altText = imageMeta.hasProduct
+      ? (deal.title ? `${deal.title} image` : 'Deal image')
+      : (imageMeta.hasStoreLogo ? `${storeName} logo` : 'Dealna deal placeholder');
+    setImageWithFallback(detailImage, imageMeta.candidates, altText);
+    detailImage.classList.toggle('logo-image', !imageMeta.hasProduct && imageMeta.hasStoreLogo);
     detailImage.style.display = 'block';
   }
 
@@ -5677,7 +5737,7 @@ function openModal(deal) {
   const disc = formatDiscount(deal);
   const cat = normCat(deal.category || (deal.store && deal.store.category) || '');
   const expiry = formatExpiry(deal.expiresAt);
-  const imageInfo = getDealImageInfo(deal);
+  const imageMeta = getImageCandidates(deal);
 
   document.getElementById('modal-store-name').textContent = storeName;
   document.getElementById('modal-deal-title').textContent = deal.title || '—';
@@ -5687,13 +5747,11 @@ function openModal(deal) {
   document.getElementById('modal-expiry').textContent = expiry;
   const modalImage = document.getElementById('modal-image');
   if (modalImage) {
-    modalImage.src = imageInfo.url;
-    modalImage.alt = imageInfo.isFallback ? 'Dealna deal placeholder' : (imageInfo.isStoreLogo ? `${storeName} logo` : (deal.title ? `${deal.title} image` : 'Deal image'));
-    modalImage.onerror = function() {
-      modalImage.onerror = null;
-      modalImage.src = 'assets/deal-placeholder.svg';
-      modalImage.alt = 'Dealna deal placeholder';
-    };
+    const altText = imageMeta.hasProduct
+      ? (deal.title ? `${deal.title} image` : 'Deal image')
+      : (imageMeta.hasStoreLogo ? `${storeName} logo` : 'Dealna deal placeholder');
+    setImageWithFallback(modalImage, imageMeta.candidates, altText);
+    modalImage.classList.toggle('logo-image', !imageMeta.hasProduct && imageMeta.hasStoreLogo);
     modalImage.style.display = 'block';
   }
 
