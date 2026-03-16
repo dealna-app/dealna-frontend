@@ -5015,9 +5015,34 @@ function normCat(str) {
 /* ============================================================
    DEAL IMAGE (with fallback)
    ============================================================ */
+function getStoreDomain(store) {
+  if (!store || !store.website) return '';
+  let raw = String(store.website).trim();
+  if (!raw) return '';
+  if (!/^https?:\/\//i.test(raw)) raw = `https://${raw}`;
+  try {
+    const url = new URL(raw);
+    return url.hostname.replace(/^www\./i, '');
+  } catch (err) {
+    return '';
+  }
+}
+
+function getStoreLogoUrl(store) {
+  if (!store) return '';
+  if (store.logoUrl) return store.logoUrl;
+  const domain = getStoreDomain(store);
+  if (domain) return `https://logo.clearbit.com/${domain}`;
+  return '';
+}
+
 function getDealImageInfo(deal) {
-  const url = deal.imageUrl || deal.image || '';
-  if (url) return { url: url, isFallback: false };
+  const storeObj = typeof deal.store === 'object' ? deal.store : null;
+  const storeLogo = getStoreLogoUrl(storeObj);
+  const url = deal.imageUrl || deal.image || storeLogo || '';
+  if (url) {
+    return { url: url, isFallback: false, isStoreLogo: !deal.imageUrl && !deal.image && !!storeLogo };
+  }
   return { url: 'assets/deal-placeholder.svg', isFallback: true };
 }
 
@@ -5045,7 +5070,7 @@ function renderDealCard(deal, size = 'normal') {
   card.innerHTML = `
     ${aiScore ? `<div class="ai-score-badge" aria-label="AI Score ${aiScore}">AI ${aiScore}</div>` : ''}
     <div class="deal-card-top">
-      <img class="deal-card-image" src="${escHtml(imageInfo.url)}" alt="${escHtml(imageInfo.isFallback ? 'Dealna deal placeholder' : (deal.title ? deal.title + ' image' : 'Deal image'))}" loading="lazy">
+      <img class="deal-card-image" src="${escHtml(imageInfo.url)}" alt="${escHtml(imageInfo.isFallback ? 'Dealna deal placeholder' : (imageInfo.isStoreLogo ? storeName + ' logo' : (deal.title ? deal.title + ' image' : 'Deal image')))}" loading="lazy" onerror="this.onerror=null;this.src='assets/deal-placeholder.svg';">
       <div class="deal-store-tag">
         <div class="deal-store-dot" aria-hidden="true"></div>
         <span class="deal-store-name">${escHtml(storeName)}</span>
@@ -5600,7 +5625,12 @@ function openDealDetail(deal) {
   const detailImage = document.getElementById('detail-image');
   if (detailImage) {
     detailImage.src = imageInfo.url;
-    detailImage.alt = imageInfo.isFallback ? 'Dealna deal placeholder' : (deal.title ? `${deal.title} image` : 'Deal image');
+    detailImage.alt = imageInfo.isFallback ? 'Dealna deal placeholder' : (imageInfo.isStoreLogo ? `${storeName} logo` : (deal.title ? `${deal.title} image` : 'Deal image'));
+    detailImage.onerror = function() {
+      detailImage.onerror = null;
+      detailImage.src = 'assets/deal-placeholder.svg';
+      detailImage.alt = 'Dealna deal placeholder';
+    };
     detailImage.style.display = 'block';
   }
 
@@ -5658,7 +5688,12 @@ function openModal(deal) {
   const modalImage = document.getElementById('modal-image');
   if (modalImage) {
     modalImage.src = imageInfo.url;
-    modalImage.alt = imageInfo.isFallback ? 'Dealna deal placeholder' : (deal.title ? `${deal.title} image` : 'Deal image');
+    modalImage.alt = imageInfo.isFallback ? 'Dealna deal placeholder' : (imageInfo.isStoreLogo ? `${storeName} logo` : (deal.title ? `${deal.title} image` : 'Deal image'));
+    modalImage.onerror = function() {
+      modalImage.onerror = null;
+      modalImage.src = 'assets/deal-placeholder.svg';
+      modalImage.alt = 'Dealna deal placeholder';
+    };
     modalImage.style.display = 'block';
   }
 
