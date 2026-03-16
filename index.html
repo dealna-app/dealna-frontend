@@ -5013,6 +5013,15 @@ function normCat(str) {
 }
 
 /* ============================================================
+   DEAL IMAGE (with fallback)
+   ============================================================ */
+function getDealImageInfo(deal) {
+  const url = deal.imageUrl || deal.image || '';
+  if (url) return { url: url, isFallback: false };
+  return { url: 'assets/deal-placeholder.svg', isFallback: true };
+}
+
+/* ============================================================
    RENDER: DEAL CARD (standard)
    ============================================================ */
 function renderDealCard(deal, size = 'normal') {
@@ -5022,7 +5031,7 @@ function renderDealCard(deal, size = 'normal') {
   const soon = isExpiringSoon(deal.expiresAt);
   const storeName = typeof deal.store === 'object' ? deal.store.name : (deal.storeName || deal.store || 'Store');
   const initial = storeInitial(storeName);
-  const imageUrl = deal.imageUrl || deal.image || null;
+  const imageInfo = getDealImageInfo(deal);
   const aiScore = deal.aiScore;
   const isAI = deal.isAIGenerated || deal.source === 'ai';
 
@@ -5036,7 +5045,7 @@ function renderDealCard(deal, size = 'normal') {
   card.innerHTML = `
     ${aiScore ? `<div class="ai-score-badge" aria-label="AI Score ${aiScore}">AI ${aiScore}</div>` : ''}
     <div class="deal-card-top">
-      ${imageUrl ? `<img class="deal-card-image" src="${escHtml(imageUrl)}" alt="${escHtml(deal.title ? deal.title + ' image' : 'Deal image')}" loading="lazy">` : ''}
+      <img class="deal-card-image" src="${escHtml(imageInfo.url)}" alt="${escHtml(imageInfo.isFallback ? 'Dealna deal placeholder' : (deal.title ? deal.title + ' image' : 'Deal image'))}" loading="lazy">
       <div class="deal-store-tag">
         <div class="deal-store-dot" aria-hidden="true"></div>
         <span class="deal-store-name">${escHtml(storeName)}</span>
@@ -5580,7 +5589,7 @@ function openDealDetail(deal) {
   const disc = formatDiscount(deal);
   const cat = normCat(deal.category || (deal.store && deal.store.category) || '');
   const expiry = formatExpiry(deal.expiresAt);
-  const imageUrl = deal.imageUrl || deal.image || null;
+  const imageInfo = getDealImageInfo(deal);
 
   document.getElementById('detail-store-name').textContent = storeName;
   document.getElementById('detail-title').textContent = deal.title || '—';
@@ -5590,15 +5599,9 @@ function openDealDetail(deal) {
   document.getElementById('detail-expiry').textContent = expiry;
   const detailImage = document.getElementById('detail-image');
   if (detailImage) {
-    if (imageUrl) {
-      detailImage.src = imageUrl;
-      detailImage.alt = deal.title ? `${deal.title} image` : 'Deal image';
-      detailImage.style.display = 'block';
-    } else {
-      detailImage.removeAttribute('src');
-      detailImage.alt = '';
-      detailImage.style.display = 'none';
-    }
+    detailImage.src = imageInfo.url;
+    detailImage.alt = imageInfo.isFallback ? 'Dealna deal placeholder' : (deal.title ? `${deal.title} image` : 'Deal image');
+    detailImage.style.display = 'block';
   }
 
   const codePill = document.getElementById('detail-code-pill');
@@ -5644,7 +5647,7 @@ function openModal(deal) {
   const disc = formatDiscount(deal);
   const cat = normCat(deal.category || (deal.store && deal.store.category) || '');
   const expiry = formatExpiry(deal.expiresAt);
-  const imageUrl = deal.imageUrl || deal.image || null;
+  const imageInfo = getDealImageInfo(deal);
 
   document.getElementById('modal-store-name').textContent = storeName;
   document.getElementById('modal-deal-title').textContent = deal.title || '—';
@@ -5654,15 +5657,9 @@ function openModal(deal) {
   document.getElementById('modal-expiry').textContent = expiry;
   const modalImage = document.getElementById('modal-image');
   if (modalImage) {
-    if (imageUrl) {
-      modalImage.src = imageUrl;
-      modalImage.alt = deal.title ? `${deal.title} image` : 'Deal image';
-      modalImage.style.display = 'block';
-    } else {
-      modalImage.removeAttribute('src');
-      modalImage.alt = '';
-      modalImage.style.display = 'none';
-    }
+    modalImage.src = imageInfo.url;
+    modalImage.alt = imageInfo.isFallback ? 'Dealna deal placeholder' : (deal.title ? `${deal.title} image` : 'Deal image');
+    modalImage.style.display = 'block';
   }
 
   // Promo code
