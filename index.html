@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dealna — Best Deals in Morocco</title>
+<meta name="description" content="Dealna finds the best deals in Morocco. AI-verified promos, flash sales, and coupon codes, updated in real time.">
+<meta property="og:title" content="Dealna — Best Deals in Morocco">
+<meta property="og:description" content="AI-verified promos, flash sales, and coupon codes from top Moroccan stores.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://dealna-app.github.io/dealna-frontend/">
+<meta property="og:image" content="https://dealna-app.github.io/dealna-frontend/assets/og-image.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dealna — Best Deals in Morocco">
+<meta name="twitter:description" content="AI-verified promos, flash sales, and coupon codes from top Moroccan stores.">
+<meta name="twitter:image" content="https://dealna-app.github.io/dealna-frontend/assets/og-image.svg">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="apple-touch-icon" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -77,6 +91,21 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+.test-banner {
+  background: var(--ink);
+  color: var(--gold-lt);
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.test-banner strong {
+  color: var(--gold);
 }
 
 a { color: inherit; text-decoration: none; }
@@ -984,6 +1013,16 @@ ul, ol { list-style: none; }
   flex-direction: column;
 }
 
+.deal-card-image {
+  width: 100%;
+  height: 160px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  background: var(--rule-soft);
+  margin-bottom: 14px;
+}
+
 .deal-card-bottom {
   padding: 16px 24px;
   border-top: 1px solid var(--rule);
@@ -1696,6 +1735,16 @@ ul, ol { list-style: none; }
   color: var(--ink);
 }
 
+.modal-deal-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--rule);
+  background: var(--rule-soft);
+  margin: 6px 0 16px;
+}
+
 .modal-discount-row {
   display: flex;
   align-items: baseline;
@@ -1898,6 +1947,127 @@ ul, ol { list-style: none; }
 }
 
 #page-deals.active { display: block; }
+
+/* ============================================================
+   PAGE: DEAL DETAIL
+   ============================================================ */
+#page-deal {
+  display: none;
+  padding: 48px 0 80px;
+  min-height: 60vh;
+}
+
+#page-deal.active { display: block; }
+
+.deal-detail-card {
+  max-width: 920px;
+  margin: 0 auto;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: clamp(20px, 3vw, 36px);
+}
+
+.deal-detail-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.deal-detail-image {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: var(--rule-soft);
+  margin: 6px 0 16px;
+}
+
+.deal-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  background: var(--parchment);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.deal-detail-back:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.deal-detail-title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.4vw, 40px);
+  margin: 4px 0 12px;
+}
+
+.deal-detail-discount {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.8vw, 46px);
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.deal-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.deal-detail-meta .label {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.deal-detail-meta .value {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.deal-detail-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.deal-detail-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--parchment);
+  font-size: 0.85rem;
+}
+
+.deal-detail-code {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+.deal-detail-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
 
 /* ============================================================
    PAGE: STORES (full page)
@@ -2908,6 +3078,48 @@ ul, ol { list-style: none; }
 }
 
 /* ============================================================
+   SECTION: DOWNLOAD
+   ============================================================ */
+#download {
+  padding: 64px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.download-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: clamp(20px, 3vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.download-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  margin-bottom: 8px;
+}
+
+.download-copy {
+  color: #555;
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+.download-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .download-card { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
    PROGRESS BAR — AI SCORE INDICATOR
    ============================================================ */
 .score-bar-wrap {
@@ -3772,6 +3984,13 @@ ul, ol { list-style: none; }
 <body>
 
 <!-- ============================================================
+     TEST ENVIRONMENT BANNER
+     ============================================================ -->
+<div class="test-banner" role="note" aria-label="Test environment notice">
+  <span>Test Environment</span> <strong>Data may be reset</strong>
+</div>
+
+<!-- ============================================================
      TICKER BANNER
      ============================================================ -->
 <div id="ticker" role="marquee" aria-label="Live deals ticker">
@@ -3874,6 +4093,7 @@ ul, ol { list-style: none; }
     </div>
     <div class="modal-body">
       <h2 class="modal-deal-title" id="modal-deal-title">—</h2>
+      <img class="modal-deal-image" id="modal-image" alt="" loading="lazy" style="display:none">
       <div class="modal-discount-row">
         <div class="modal-discount-number" id="modal-discount">—</div>
         <div class="modal-discount-label" id="modal-discount-label">discount<br>on selected items</div>
@@ -3900,7 +4120,7 @@ ul, ol { list-style: none; }
     </div>
     <div class="modal-footer">
       <a href="#" id="modal-cta-btn" target="_blank" rel="noopener noreferrer" class="btn-modal-cta">
-        View Deal
+        <span id="modal-cta-label">View Deal</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
           <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
@@ -3948,6 +4168,9 @@ ul, ol { list-style: none; }
             <button class="btn-secondary" data-page="stores">
               View Stores
             </button>
+            <a class="btn-secondary" id="download-cta" href="#download">
+              Download App
+            </a>
           </div>
           <div class="hero-scroll" aria-hidden="true">
             <div class="hero-scroll-line"></div>
@@ -4146,6 +4369,31 @@ ul, ol { list-style: none; }
     </div>
   </section>
 
+  <!-- Download -->
+  <section id="download" aria-labelledby="download-heading">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">
+          <div class="section-label-line" aria-hidden="true"></div>
+          <div>
+            <h2 class="section-title" id="download-heading">Download the App</h2>
+            <p class="section-subtitle">Save deals on the go</p>
+          </div>
+        </div>
+      </div>
+      <div class="download-card">
+        <div>
+          <h3 class="download-title">Dealna for iOS and Android</h3>
+          <p class="download-copy">Get instant alerts for new promotions, flash sales, and exclusive codes. We will notify you as soon as the app is live.</p>
+        </div>
+        <div class="download-actions">
+          <a class="btn-primary" href="#" data-download="ios">Download for iOS</a>
+          <a class="btn-secondary" href="#" data-download="android">Download for Android</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Newsletter -->
   <section id="newsletter" aria-labelledby="newsletter-heading">
     <div class="container">
@@ -4219,6 +4467,52 @@ ul, ol { list-style: none; }
       <button class="btn-secondary" id="load-more-btn" style="display:none">
         Load More
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- DEAL DETAIL PAGE -->
+<div id="page-deal" role="main" aria-label="Deal details">
+  <div class="container">
+    <div class="deal-detail-card">
+      <div class="deal-detail-top">
+        <button class="deal-detail-back" id="deal-back-btn" type="button">Back to Deals</button>
+        <div class="modal-store-badge" id="detail-store-name">—</div>
+      </div>
+      <img class="deal-detail-image" id="detail-image" alt="" loading="lazy" style="display:none">
+      <h1 class="deal-detail-title" id="detail-title">—</h1>
+      <div class="deal-detail-discount" id="detail-discount">—</div>
+      <p id="detail-description">—</p>
+
+      <div class="deal-detail-meta">
+        <div>
+          <div class="label">Category</div>
+          <div class="value" id="detail-category">—</div>
+        </div>
+        <div>
+          <div class="label">Expires</div>
+          <div class="value" id="detail-expiry">—</div>
+        </div>
+      </div>
+
+      <div class="deal-detail-actions">
+        <div class="deal-detail-pill" id="detail-code-pill" style="display:none">
+          <span>Promo Code</span>
+          <span class="deal-detail-code" id="detail-code">—</span>
+          <button class="modal-code-copy" id="detail-copy-btn" type="button">Copy</button>
+        </div>
+        <div id="detail-ai-badge"></div>
+      </div>
+
+      <div class="deal-detail-actions">
+        <a href="#" id="detail-external-btn" class="btn-primary deal-detail-cta" target="_blank" rel="noopener noreferrer" style="display:none">
+          Go to Deal
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -4728,6 +5022,7 @@ function renderDealCard(deal, size = 'normal') {
   const soon = isExpiringSoon(deal.expiresAt);
   const storeName = typeof deal.store === 'object' ? deal.store.name : (deal.storeName || deal.store || 'Store');
   const initial = storeInitial(storeName);
+  const imageUrl = deal.imageUrl || deal.image || null;
   const aiScore = deal.aiScore;
   const isAI = deal.isAIGenerated || deal.source === 'ai';
 
@@ -4741,6 +5036,7 @@ function renderDealCard(deal, size = 'normal') {
   card.innerHTML = `
     ${aiScore ? `<div class="ai-score-badge" aria-label="AI Score ${aiScore}">AI ${aiScore}</div>` : ''}
     <div class="deal-card-top">
+      ${imageUrl ? `<img class="deal-card-image" src="${escHtml(imageUrl)}" alt="${escHtml(deal.title ? deal.title + ' image' : 'Deal image')}" loading="lazy">` : ''}
       <div class="deal-store-tag">
         <div class="deal-store-dot" aria-hidden="true"></div>
         <span class="deal-store-name">${escHtml(storeName)}</span>
@@ -5077,6 +5373,8 @@ function navigateTo(page, filter) {
   document.getElementById('page-home').style.display = 'none';
   document.getElementById('page-deals').classList.remove('active');
   document.getElementById('page-deals').style.display = 'none';
+  document.getElementById('page-deal').classList.remove('active');
+  document.getElementById('page-deal').style.display = 'none';
   document.getElementById('page-stores').classList.remove('active');
   document.getElementById('page-stores').style.display = 'none';
   document.getElementById('page-about').classList.remove('active');
@@ -5103,6 +5401,9 @@ function navigateTo(page, filter) {
     document.getElementById('page-stores').classList.add('active');
     document.getElementById('page-stores').style.display = 'block';
     renderStoresFull(state.stores);
+  } else if (page === 'deal') {
+    document.getElementById('page-deal').classList.add('active');
+    document.getElementById('page-deal').style.display = 'block';
   } else if (page === 'about') {
     document.getElementById('page-about').classList.add('active');
     document.getElementById('page-about').style.display = 'block';
@@ -5269,11 +5570,81 @@ modalOverlay.addEventListener('click', (e) => {
   if (e.target === modalOverlay) closeModal();
 });
 
+function getExternalDealUrl(deal) {
+  const raw = deal.affiliateUrl || deal.url || deal.link || null;
+  return raw && typeof raw === 'string' ? raw : null;
+}
+
+function openDealDetail(deal) {
+  const storeName = typeof deal.store === 'object' ? deal.store.name : (deal.storeName || deal.store || 'Store');
+  const disc = formatDiscount(deal);
+  const cat = normCat(deal.category || (deal.store && deal.store.category) || '');
+  const expiry = formatExpiry(deal.expiresAt);
+  const imageUrl = deal.imageUrl || deal.image || null;
+
+  document.getElementById('detail-store-name').textContent = storeName;
+  document.getElementById('detail-title').textContent = deal.title || '—';
+  document.getElementById('detail-discount').textContent = disc;
+  document.getElementById('detail-description').textContent = deal.description || 'No additional details available for this deal.';
+  document.getElementById('detail-category').textContent = CATEGORY_LABELS[cat] || cat;
+  document.getElementById('detail-expiry').textContent = expiry;
+  const detailImage = document.getElementById('detail-image');
+  if (detailImage) {
+    if (imageUrl) {
+      detailImage.src = imageUrl;
+      detailImage.alt = deal.title ? `${deal.title} image` : 'Deal image';
+      detailImage.style.display = 'block';
+    } else {
+      detailImage.removeAttribute('src');
+      detailImage.alt = '';
+      detailImage.style.display = 'none';
+    }
+  }
+
+  const codePill = document.getElementById('detail-code-pill');
+  if (deal.promoCode) {
+    codePill.style.display = 'inline-flex';
+    document.getElementById('detail-code').textContent = deal.promoCode;
+  } else {
+    codePill.style.display = 'none';
+  }
+
+  const detailCopyBtn = document.getElementById('detail-copy-btn');
+  detailCopyBtn.textContent = 'Copy';
+  detailCopyBtn.onclick = () => {
+    copyToClipboard(deal.promoCode);
+    detailCopyBtn.textContent = 'Copied';
+    setTimeout(() => { detailCopyBtn.textContent = 'Copy'; }, 2000);
+  };
+
+  const aiBadge = document.getElementById('detail-ai-badge');
+  if (deal.aiScore) {
+    aiBadge.innerHTML = `<div class="modal-ai-score">AI Score ${deal.aiScore}/100</div>`;
+  } else {
+    aiBadge.innerHTML = '';
+  }
+
+  const externalUrl = getExternalDealUrl(deal);
+  const externalBtn = document.getElementById('detail-external-btn');
+  if (externalUrl) {
+    externalBtn.style.display = 'inline-flex';
+    externalBtn.href = externalUrl;
+    externalBtn.onclick = () => trackClick(deal._id || deal.id);
+  } else {
+    externalBtn.style.display = 'none';
+  }
+
+  state.lastPageBeforeDeal = state.currentPage || 'home';
+  navigateTo('deal');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function openModal(deal) {
   const storeName = typeof deal.store === 'object' ? deal.store.name : (deal.storeName || deal.store || 'Store');
   const disc = formatDiscount(deal);
   const cat = normCat(deal.category || (deal.store && deal.store.category) || '');
   const expiry = formatExpiry(deal.expiresAt);
+  const imageUrl = deal.imageUrl || deal.image || null;
 
   document.getElementById('modal-store-name').textContent = storeName;
   document.getElementById('modal-deal-title').textContent = deal.title || '—';
@@ -5281,6 +5652,18 @@ function openModal(deal) {
   document.getElementById('modal-description').textContent = deal.description || 'No additional details available for this deal.';
   document.getElementById('modal-category').textContent = CATEGORY_LABELS[cat] || cat;
   document.getElementById('modal-expiry').textContent = expiry;
+  const modalImage = document.getElementById('modal-image');
+  if (modalImage) {
+    if (imageUrl) {
+      modalImage.src = imageUrl;
+      modalImage.alt = deal.title ? `${deal.title} image` : 'Deal image';
+      modalImage.style.display = 'block';
+    } else {
+      modalImage.removeAttribute('src');
+      modalImage.alt = '';
+      modalImage.style.display = 'none';
+    }
+  }
 
   // Promo code
   const codeSection = document.getElementById('modal-code-section');
@@ -5314,11 +5697,18 @@ function openModal(deal) {
     aiBadge.innerHTML = '';
   }
 
-  // CTA link — track click
+  // CTA link — external if available, otherwise open internal detail page
   const ctaBtn = document.getElementById('modal-cta-btn');
-  const dealUrl = deal.affiliateUrl || deal.url || deal.link || (deal.store && typeof deal.store === 'object' && deal.store.website) || '#';
-  ctaBtn.href = dealUrl;
-  ctaBtn.onclick = () => trackClick(deal._id || deal.id);
+  const ctaLabel = document.getElementById('modal-cta-label');
+  ctaLabel.textContent = 'View Deal';
+  ctaBtn.href = '#';
+  ctaBtn.target = '_self';
+  ctaBtn.rel = '';
+  ctaBtn.onclick = (e) => {
+    e.preventDefault();
+    closeModal();
+    openDealDetail(deal);
+  };
 
   // Show modal
   modalOverlay.style.display = 'flex';
@@ -5335,6 +5725,10 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
+document.getElementById('deal-back-btn').addEventListener('click', () => {
+  navigateTo(state.lastPageBeforeDeal || 'deals');
+});
+
 /* ============================================================
    TRACK CLICK
    ============================================================ */
@@ -5343,7 +5737,7 @@ async function trackClick(dealId) {
   try {
     const headers = { 'Content-Type': 'application/json' };
     if (auth && auth.token) headers['Authorization'] = 'Bearer ' + auth.token;
-    await fetch(API_BASE + '/tracking/click', {
+    await fetch(API_BASE + '/track/click', {
       method: 'POST',
       headers,
       body: JSON.stringify({ dealId }),
@@ -5901,27 +6295,26 @@ async function saveDeal(dealId, btn) {
   if (!auth.user) { openAuthModal('login'); return; }
   try {
     var isSaved = auth.user.savedDeals && auth.user.savedDeals.some(function(s) { return (s._id || s) === dealId; });
-    var method = isSaved ? 'DELETE' : 'POST';
-    var url = isSaved ? (API_BASE + '/users/me/saved/' + dealId) : (API_BASE + '/users/me/saved');
-    var fetchOpts = {
-      method: method,
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + auth.token }
-    };
-    if (method === 'POST') fetchOpts.body = JSON.stringify({ dealId: dealId });
-    var res = await fetch(url, fetchOpts);
-    if (res.ok) {
-      if (!auth.user.savedDeals) auth.user.savedDeals = [];
-      if (isSaved) {
-        auth.user.savedDeals = auth.user.savedDeals.filter(function(s) { return (s._id || s) !== dealId; });
-        if (btn) { btn.classList.remove('saved'); btn.setAttribute('aria-label', 'Save deal'); }
-        showToast('Removed from saved deals', 'info');
-      } else {
-        auth.user.savedDeals.push({ _id: dealId });
-        if (btn) { btn.classList.add('saved'); btn.setAttribute('aria-label', 'Unsave deal'); }
-        showToast('Deal saved to your account', 'success');
-      }
-      auth.updateUI();
+    var url = API_BASE + '/deals/' + dealId + '/save';
+    var res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + auth.token },
+      body: JSON.stringify({ source: state.currentPage || 'home' })
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Save failed');
+    var savedNow = (typeof data.saved === 'boolean') ? data.saved : !isSaved;
+    if (!auth.user.savedDeals) auth.user.savedDeals = [];
+    if (!savedNow) {
+      auth.user.savedDeals = auth.user.savedDeals.filter(function(s) { return (s._id || s) !== dealId; });
+      if (btn) { btn.classList.remove('saved'); btn.setAttribute('aria-label', 'Save deal'); }
+      showToast('Removed from saved deals', 'info');
+    } else {
+      if (!isSaved) auth.user.savedDeals.push({ _id: dealId });
+      if (btn) { btn.classList.add('saved'); btn.setAttribute('aria-label', 'Unsave deal'); }
+      showToast('Deal saved to your account', 'success');
     }
+    auth.updateUI();
   } catch(e) {
     showToast('Could not save deal. Please try again.', 'error');
   }
@@ -6096,6 +6489,14 @@ document.getElementById('login-form').addEventListener('submit', async function(
    REGISTER SUBMIT
    ============================================================ */
 var selectedCats = new Set();
+var categoryMap = {
+  food: 'Food',
+  fashion: 'Fashion',
+  electronics: 'Electronics',
+  beauty: 'Beauty',
+  travel: 'Travel',
+  local: 'Local',
+};
 document.querySelectorAll('.auth-cat-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {
     var cat = btn.dataset.cat;
@@ -6115,11 +6516,14 @@ document.getElementById('register-form').addEventListener('submit', async functi
   errEl.classList.remove('visible');
   if (!name) { errEl.textContent = 'Please enter your name'; errEl.classList.add('visible'); return; }
   if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email'; errEl.classList.add('visible'); return; }
-  if (password.length < 6) { errEl.textContent = 'Password must be at least 6 characters'; errEl.classList.add('visible'); return; }
+  if (password.length < 8) { errEl.textContent = 'Password must be at least 8 characters'; errEl.classList.add('visible'); return; }
   submitBtn.disabled = true;
   submitBtn.textContent = 'Creating account...';
   try {
-    await auth.register({ name, email, password, city: city || undefined, preferences: { categories: [...selectedCats] } });
+    var mappedCats = Array.from(selectedCats).map(function(cat) {
+      return categoryMap[cat] || cat;
+    });
+    await auth.register({ name, email, password, city: city || undefined, preferences: { categories: mappedCats } });
     closeAuthModal();
     showToast('Account created. Welcome, ' + name + '!', 'success');
   } catch(err) {
@@ -6221,13 +6625,22 @@ document.querySelectorAll('.account-nav-item[data-section]').forEach(function(bt
 
 document.getElementById('account-logout-btn').addEventListener('click', function() { auth.logout(); });
 
+document.querySelectorAll('[data-download]').forEach(function(btn) {
+  btn.addEventListener('click', function(e) {
+    var href = btn.getAttribute('href');
+    if (href && href !== '#') return;
+    e.preventDefault();
+    showToast('Download links are coming soon.', 'info');
+  });
+});
+
 /* ============================================================
    PATCH navigateTo FOR ACCOUNT PAGE
    ============================================================ */
 var _baseNavigateTo = navigateTo;
 navigateTo = function(page, filter) {
   if (page === 'account') {
-    ['page-home','page-deals','page-stores','page-about'].forEach(function(id) {
+    ['page-home','page-deals','page-deal','page-stores','page-about'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) { el.classList.remove('active'); el.style.display = 'none'; }
     });
